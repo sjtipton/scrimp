@@ -16,7 +16,7 @@ namespace scrimp.Entities
         public bool IsTransfer { get; set; }
         public Category Category { get; set; }
         public string Note { get; set; }
-        public IEnumerable<string> Labels { get; set; }
+        public IEnumerable<TransactionLabel> Labels { get; set; }
         public TransactionAccount TransactionAccount { get; set; }
         public TransactionStatus Status { get; set; }
         public decimal ClosingBalance { get; set; }
