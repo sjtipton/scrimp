@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using scrimp.Domain;
+using scrimp.Dtos;
 using System;
 
 namespace scrimp.Controllers
