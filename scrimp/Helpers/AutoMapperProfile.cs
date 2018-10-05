@@ -10,6 +10,12 @@ namespace scrimp.Helpers
         {
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
+            CreateMap<Account, AccountDto>();
+            CreateMap<AccountDto, Account>();
+            CreateMap<Category, CategoryDto>();
+            CreateMap<CategoryDto, Category>();
+            CreateMap<Transaction, TransactionDto>();
+            CreateMap<TransactionDto, Transaction>();
         }
     }
 }
