@@ -14,9 +14,9 @@ namespace scrimp.Controllers
 
         // TODO consider authenticate/authorize/register endpoints
 
-        // GET users
-        [HttpGet]
-        public IActionResult GetAll()
+        // GET me
+        [HttpGet("~/me")]
+        public IActionResult Get()
         {
             throw new NotImplementedException();
         }
@@ -31,13 +31,6 @@ namespace scrimp.Controllers
         // PUT users/:id
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
-        {
-            throw new NotImplementedException();
-        }
-
-        // DELETE users/:id
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
         {
             throw new NotImplementedException();
         }

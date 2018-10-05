@@ -1,4 +1,7 @@
-﻿namespace scrimp.Dtos
+﻿using scrimp.Domain;
+using System;
+
+namespace scrimp.Dtos
 {
     public class UserDto
     {
