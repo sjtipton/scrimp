@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using scrimp.Dtos;
+using scrimp.Services;
 using System;
 
 namespace scrimp.Controllers
@@ -7,8 +9,16 @@ namespace scrimp.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        // TODO implement DI
-        public CategoriesController() { }
+        private IUserService _userService;
+        private ICategoryService _categoryService;
+        private IMapper _mapper;
+
+        public CategoriesController(IUserService userService, ICategoryService categoryService, IMapper mapper)
+        {
+            _userService = userService;
+            _categoryService = categoryService;
+            _mapper = mapper;
+        }
 
         // GET users/:id/categories
         [HttpGet("users/:id/categories")]

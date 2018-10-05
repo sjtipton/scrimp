@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace scrimp.Services
 {
-    public interface ICategoriesService
+    public interface ICategoryService
     {
         IEnumerable<Category> GetUserCategories(int id);
         Category GetById(int id);

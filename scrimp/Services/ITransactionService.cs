@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace scrimp.Services
 {
-    public interface ITransactionsService
+    public interface ITransactionService
     {
         IEnumerable<Transaction> GetTransactionAccountTransactions(int id);
         IEnumerable<Transaction> GetAccountTransactions(int id);

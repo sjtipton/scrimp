@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using scrimp.Services;
 using System;
 
 namespace scrimp.Controllers
@@ -6,8 +8,16 @@ namespace scrimp.Controllers
     [ApiController]
     public class TransactionAccountsController : ControllerBase
     {
-        // TODO implement DI
-        public TransactionAccountsController() { }
+        private IUserService _userService;
+        private ITransactionAccountService _transactionAccountService;
+        private IMapper _mapper;
+
+        public TransactionAccountsController(IUserService userService, ITransactionAccountService transactionAccountService, IMapper mapper)
+        {
+            _userService = userService;
+            _transactionAccountService = transactionAccountService;
+            _mapper = mapper;
+        }
 
         // GET users/:id/transaction_accounts
         [HttpGet("users/:id/transaction_accounts")]

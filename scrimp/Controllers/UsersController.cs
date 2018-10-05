@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using scrimp.Dtos;
+using scrimp.Services;
 using System;
 
 namespace scrimp.Controllers
@@ -9,8 +11,14 @@ namespace scrimp.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        // TODO implement DI
-        public UsersController() { }
+        private IUserService _userService;
+        private IMapper _mapper;
+
+        public UsersController(IUserService userService, IMapper mapper)
+        {
+            _userService = userService;
+            _mapper = mapper;
+        }
 
         // TODO consider authenticate/authorize/register endpoints
 

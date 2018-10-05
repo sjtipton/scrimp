@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using scrimp.Dtos;
+using scrimp.Services;
 using System;
 
 namespace scrimp.Controllers
@@ -7,8 +9,14 @@ namespace scrimp.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        // TODO implement DI
-        public AccountsController() { }
+        private IUserService _userService;
+        private IMapper _mapper;
+
+        public AccountsController(IUserService userService, IMapper mapper)
+        {
+            _userService = userService;
+            _mapper = mapper;
+        }
 
         // GET users/:id/accounts
         [HttpGet("users/:id/accounts")]
