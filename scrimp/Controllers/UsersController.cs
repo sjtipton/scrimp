@@ -16,7 +16,7 @@ namespace scrimp.Controllers
 
         // GET me
         [HttpGet("~/me")]
-        public IActionResult Get()
+        public IActionResult GetAuthenticatedUser()
         {
             throw new NotImplementedException();
         }
