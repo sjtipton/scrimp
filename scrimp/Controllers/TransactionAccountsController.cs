@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using scrimp.Dtos;
 using scrimp.Services;
+using System.Collections.Generic;
 
 namespace scrimp.Controllers
 {
@@ -24,7 +25,7 @@ namespace scrimp.Controllers
         public IActionResult GetUserTransactionAccounts(int id)
         {
             var userTransactionAccounts = _transactionAccountService.GetUserTransactionAccounts(id);
-            var userTransactionAccountDtos = _mapper.Map<TransactionAccountDto>(userTransactionAccounts);
+            var userTransactionAccountDtos = _mapper.Map<IEnumerable<TransactionAccountDto>>(userTransactionAccounts);
             return Ok(userTransactionAccountDtos);
         }
 

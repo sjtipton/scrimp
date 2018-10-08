@@ -4,6 +4,7 @@ using scrimp.Dtos;
 using scrimp.Entities;
 using scrimp.Helpers;
 using scrimp.Services;
+using System.Collections.Generic;
 
 namespace scrimp.Controllers
 {
@@ -26,7 +27,7 @@ namespace scrimp.Controllers
         public IActionResult GetUserCategories(int id)
         {
             var userCategories = _categoryService.GetUserCategories(id);
-            var userCategoryDtos = _mapper.Map<CategoryDto>(userCategories);
+            var userCategoryDtos = _mapper.Map<IEnumerable<CategoryDto>>(userCategories);
             return Ok(userCategoryDtos);
         }
 

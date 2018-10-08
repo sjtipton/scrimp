@@ -4,6 +4,7 @@ using scrimp.Dtos;
 using scrimp.Entities;
 using scrimp.Helpers;
 using scrimp.Services;
+using System.Collections.Generic;
 
 namespace scrimp.Controllers
 {
@@ -26,7 +27,7 @@ namespace scrimp.Controllers
         public IActionResult GetTransactionAccountTransactions(int id)
         {
             var transactionAccountTransactions = _transactionService.GetTransactionAccountTransactions(id);
-            var transactionAccountTransactionDtos = _mapper.Map<TransactionDto>(transactionAccountTransactions);
+            var transactionAccountTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(transactionAccountTransactions);
             return Ok(transactionAccountTransactionDtos);
         }
 
@@ -36,7 +37,7 @@ namespace scrimp.Controllers
         public IActionResult GetAccountTransactions(int id)
         {
             var accountTransactions = _transactionService.GetAccountTransactions(id);
-            var accountTransactionDtos = _mapper.Map<TransactionDto>(accountTransactions);
+            var accountTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(accountTransactions);
             return Ok(accountTransactionDtos);
         }
 
@@ -46,7 +47,7 @@ namespace scrimp.Controllers
         public IActionResult GetUserTransactions(int id)
         {
             var userTransactions = _transactionService.GetUserTransactions(id);
-            var userTransactionDtos = _mapper.Map<TransactionDto>(userTransactions);
+            var userTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(userTransactions);
             return Ok(userTransactionDtos);
         }
 
