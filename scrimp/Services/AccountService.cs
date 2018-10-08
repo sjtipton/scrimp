@@ -49,13 +49,8 @@ namespace scrimp.Services
             return _context.Accounts.Where(x => x.UserId == userId).ToList();
         }
 
-        public void Update(int userId, Account accountParam)
+        public void Update(Account accountParam)
         {
-            var user = _context.Users.Find(userId);
-
-            if (user == null)
-                throw new AppException("User not found. Cannot update an Account.");
-
             var account = _context.Accounts.Find(accountParam.Id);
 
             if (account == null)

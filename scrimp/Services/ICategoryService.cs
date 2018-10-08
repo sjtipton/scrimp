@@ -8,7 +8,7 @@ namespace scrimp.Services
         IEnumerable<Category> GetUserCategories(int id);
         Category GetById(int id);
         Category CreateUserCategory(int id, Category account);
-        void Update(int id, Category category);
+        void Update(Category category);
         void Delete(int id);
     }
 }

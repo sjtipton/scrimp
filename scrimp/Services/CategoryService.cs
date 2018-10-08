@@ -49,13 +49,8 @@ namespace scrimp.Services
             return _context.Categories.Where(x => x.UserId == userId).ToList();
         }
 
-        public void Update(int userId, Category categoryParam)
+        public void Update(Category categoryParam)
         {
-            var user = _context.Users.Find(userId);
-
-            if (user == null)
-                throw new AppException("User not found. Cannot update an Category.");
-
             var category = _context.Categories.Find(categoryParam.Id);
 
             if (category == null)
