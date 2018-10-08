@@ -6,5 +6,6 @@
         public string Color { get; set; }
         public int? ParentId { get; set; }
         public bool IsTransfer { get; set; }
+        public int UserId { get; set; }
     }
 }

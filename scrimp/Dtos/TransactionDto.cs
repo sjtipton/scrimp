@@ -15,5 +15,6 @@ namespace scrimp.Dtos
         public string Note { get; set; }
         public string Memo { get; set; }
         public string CheckNumber { get; set; }
+        public int UserId { get; set; }
     }
 }

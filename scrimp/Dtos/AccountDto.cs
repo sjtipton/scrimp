@@ -8,5 +8,6 @@ namespace scrimp.Dtos
         public string CurrencyCode { get; set; }
         public AccountType Type { get; set; }
         public bool IsNetWorth { get; set; }
+        public int UserId { get; set; }
     }
 }
