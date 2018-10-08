@@ -8,6 +8,7 @@ using scrimp.Services;
 namespace scrimp.Controllers
 {
     [ApiController]
+    [Route("[controller]")]
     public class AccountsController : ControllerBase
     {
         private IAccountService _accountService;
@@ -20,7 +21,8 @@ namespace scrimp.Controllers
         }
 
         // GET users/:id/accounts
-        [HttpGet("users/:id/accounts")]
+        [HttpGet]
+        [Route("~/users/:id/accounts")]
         public IActionResult GetUserAccounts(int id)
         {
             var userAccounts = _accountService.GetUserAccounts(id);
@@ -29,7 +31,8 @@ namespace scrimp.Controllers
         }
 
         // POST users/:id/accounts
-        [HttpPost("users/:id/accounts")]
+        [HttpPost]
+        [Route("~/users/:id/accounts")]
         public IActionResult CreateUserAccount(int id, [FromBody]AccountDto accountDto)
         {
             var account = _mapper.Map<Account>(accountDto);

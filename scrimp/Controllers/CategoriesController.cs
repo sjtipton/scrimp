@@ -8,6 +8,7 @@ using scrimp.Services;
 namespace scrimp.Controllers
 {
     [ApiController]
+    [Route("[controller]")]
     public class CategoriesController : ControllerBase
     {
         private ICategoryService _categoryService;
@@ -20,7 +21,8 @@ namespace scrimp.Controllers
         }
 
         // GET users/:id/categories
-        [HttpGet("users/:id/categories")]
+        [HttpGet]
+        [Route("~/users/:id/categories")]
         public IActionResult GetUserCategories(int id)
         {
             var userCategories = _categoryService.GetUserCategories(id);
@@ -29,7 +31,8 @@ namespace scrimp.Controllers
         }
 
         // POST users/:id/categories
-        [HttpPost("users/:id/categories")]
+        [HttpPost]
+        [Route("~/users/:id/categories")]
         public IActionResult CreateUserCategory(int id, [FromBody]CategoryDto categoryDto)
         {
             var category = _mapper.Map<Category>(categoryDto);

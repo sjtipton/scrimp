@@ -8,6 +8,7 @@ using scrimp.Services;
 namespace scrimp.Controllers
 {
     [ApiController]
+    [Route("[controller]")]
     public class TransactionsController : ControllerBase
     {
         private ITransactionService _transactionService;
@@ -20,7 +21,8 @@ namespace scrimp.Controllers
         }
 
         // GET transaction_accounts/:id/transactions
-        [HttpGet("transaction_accounts/:id/transactions")]
+        [HttpGet]
+        [Route("~/transaction_accounts/:id/transactions")]
         public IActionResult GetTransactionAccountTransactions(int id)
         {
             var transactionAccountTransactions = _transactionService.GetTransactionAccountTransactions(id);
@@ -29,7 +31,8 @@ namespace scrimp.Controllers
         }
 
         // GET accounts/:id/transactions
-        [HttpGet("accounts/:id/transactions")]
+        [HttpGet]
+        [Route("~/accounts/:id/transactions")]
         public IActionResult GetAccountTransactions(int id)
         {
             var accountTransactions = _transactionService.GetAccountTransactions(id);
@@ -38,7 +41,8 @@ namespace scrimp.Controllers
         }
 
         // GET users/:id/transactions
-        [HttpGet("users/:id/transactions")]
+        [HttpGet]
+        [Route("~/users/:id/transactions")]
         public IActionResult GetUserTransactions(int id)
         {
             var userTransactions = _transactionService.GetUserTransactions(id);
@@ -47,7 +51,8 @@ namespace scrimp.Controllers
         }
 
         // POST transaction_accounts/:id/transactions
-        [HttpPost("transaction_accounts/:id/transactions")]
+        [HttpPost]
+        [Route("~/transaction_accounts/:id/transactions")]
         public IActionResult CreateTransactionAccountTransaction(int id, [FromBody]TransactionDto transactionDto)
         {
             var transaction = _mapper.Map<Transaction>(transactionDto);

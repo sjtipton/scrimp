@@ -25,7 +25,8 @@ namespace scrimp.Controllers
         // TODO consider authenticate/authorize/register endpoints
 
         // GET me
-        [HttpGet("~/me")]
+        [HttpGet]
+        [Route("~/me")]
         public IActionResult GetAuthenticatedUser()
         {
             throw new NotImplementedException();

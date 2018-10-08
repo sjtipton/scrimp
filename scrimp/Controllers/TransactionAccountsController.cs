@@ -6,6 +6,7 @@ using scrimp.Services;
 namespace scrimp.Controllers
 {
     [ApiController]
+    [Route("[controller]")]
     public class TransactionAccountsController : ControllerBase
     {
         private ITransactionAccountService _transactionAccountService;
@@ -18,7 +19,8 @@ namespace scrimp.Controllers
         }
 
         // GET users/:id/transaction_accounts
-        [HttpGet("users/:id/transaction_accounts")]
+        [HttpGet]
+        [Route("~/users/:id/transaction_accounts")]
         public IActionResult GetUserTransactionAccounts(int id)
         {
             var userTransactionAccounts = _transactionAccountService.GetUserTransactionAccounts(id);
