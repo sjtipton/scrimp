@@ -20,10 +20,10 @@ namespace scrimp.Controllers
 
         // GET api/users/:id/transaction_accounts
         [HttpGet]
-        [Route("users/{userid}/transaction_accounts")]
-        public IActionResult GetUserTransactionAccounts(int userid)
+        [Route("users/{id}/transaction_accounts")]
+        public IActionResult GetUserTransactionAccounts(int id)
         {
-            var userTransactionAccounts = _transactionAccountService.GetUserTransactionAccounts(userid);
+            var userTransactionAccounts = _transactionAccountService.GetUserTransactionAccounts(id);
             var userTransactionAccountDtos = _mapper.Map<TransactionAccountDto>(userTransactionAccounts);
             return Ok(userTransactionAccountDtos);
         }

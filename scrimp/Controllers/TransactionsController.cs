@@ -20,46 +20,46 @@ namespace scrimp.Controllers
             _mapper = mapper;
         }
 
-        // GET api/transaction_accounts/:userid/transactions
+        // GET api/transaction_accounts/:id/transactions
         [HttpGet]
-        [Route("transaction_accounts/{userid}/transactions")]
-        public IActionResult GetTransactionAccountTransactions(int userid)
+        [Route("transaction_accounts/{id}/transactions")]
+        public IActionResult GetTransactionAccountTransactions(int id)
         {
-            var transactionAccountTransactions = _transactionService.GetTransactionAccountTransactions(userid);
+            var transactionAccountTransactions = _transactionService.GetTransactionAccountTransactions(id);
             var transactionAccountTransactionDtos = _mapper.Map<TransactionDto>(transactionAccountTransactions);
             return Ok(transactionAccountTransactionDtos);
         }
 
-        // GET api/accounts/:userid/transactions
+        // GET api/accounts/:id/transactions
         [HttpGet]
-        [Route("accounts/{userid}/transactions")]
-        public IActionResult GetAccountTransactions(int userid)
+        [Route("accounts/{id}/transactions")]
+        public IActionResult GetAccountTransactions(int id)
         {
-            var accountTransactions = _transactionService.GetAccountTransactions(userid);
+            var accountTransactions = _transactionService.GetAccountTransactions(id);
             var accountTransactionDtos = _mapper.Map<TransactionDto>(accountTransactions);
             return Ok(accountTransactionDtos);
         }
 
-        // GET api/users/:userid/transactions
+        // GET api/users/:id/transactions
         [HttpGet]
-        [Route("users/{userid}/transactions")]
-        public IActionResult GetUserTransactions(int userid)
+        [Route("users/{id}/transactions")]
+        public IActionResult GetUserTransactions(int id)
         {
-            var userTransactions = _transactionService.GetUserTransactions(userid);
+            var userTransactions = _transactionService.GetUserTransactions(id);
             var userTransactionDtos = _mapper.Map<TransactionDto>(userTransactions);
             return Ok(userTransactionDtos);
         }
 
-        // POST api/transaction_accounts/:userid/transactions
+        // POST api/transaction_accounts/:id/transactions
         [HttpPost]
-        [Route("transaction_accounts/{userid}/transactions")]
-        public IActionResult CreateTransactionAccountTransaction(int userid, [FromBody]TransactionDto transactionDto)
+        [Route("transaction_accounts/{id}/transactions")]
+        public IActionResult CreateTransactionAccountTransaction(int id, [FromBody]TransactionDto transactionDto)
         {
             var transaction = _mapper.Map<Transaction>(transactionDto);
 
             try
             {
-                _transactionService.CreateTransactionAccountTransaction(userid, transaction);
+                _transactionService.CreateTransactionAccountTransaction(id, transaction);
                 return Ok();
             }
             catch (AppException ex)

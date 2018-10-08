@@ -4,11 +4,12 @@ using scrimp.Dtos;
 using scrimp.Entities;
 using scrimp.Helpers;
 using scrimp.Services;
+using System.Collections.Generic;
 
 namespace scrimp.Controllers
 {
     [ApiController]
-    [Route("api/users/{userid}/accounts")]
+    [Route("api/users/{id}/accounts")]
     public class AccountsController : ControllerBase
     {
         private IAccountService _accountService;
@@ -20,24 +21,24 @@ namespace scrimp.Controllers
             _mapper = mapper;
         }
 
-        // GET api/users/:userid/accounts
+        // GET api/users/:id/accounts
         [HttpGet]
-        public IActionResult GetUserAccounts(int userid)
+        public IActionResult GetUserAccounts(int id)
         {
-            var userAccounts = _accountService.GetUserAccounts(userid);
-            var userAccountDtos = _mapper.Map<AccountDto>(userAccounts);
+            var userAccounts = _accountService.GetUserAccounts(id);
+            var userAccountDtos = _mapper.Map<IEnumerable<AccountDto>>(userAccounts);
             return Ok(userAccountDtos);
         }
 
-        // POST api/users/:userid/accounts
+        // POST api/users/:id/accounts
         [HttpPost]
-        public IActionResult CreateUserAccount(int userid, [FromBody]AccountDto accountDto)
+        public IActionResult CreateUserAccount(int id, [FromBody]AccountDto accountDto)
         {
             var account = _mapper.Map<Account>(accountDto);
 
             try
             {
-                _accountService.CreateUserAccount(userid, account);
+                _accountService.CreateUserAccount(id, account);
                 return Ok();
             }
             catch(AppException ex)

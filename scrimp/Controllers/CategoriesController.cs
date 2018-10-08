@@ -20,26 +20,26 @@ namespace scrimp.Controllers
             _mapper = mapper;
         }
 
-        // GET api/users/:userid/categories
+        // GET api/users/:id/categories
         [HttpGet]
-        [Route("users/{userid}/categories")]
-        public IActionResult GetUserCategories(int userid)
+        [Route("users/{id}/categories")]
+        public IActionResult GetUserCategories(int id)
         {
-            var userCategories = _categoryService.GetUserCategories(userid);
+            var userCategories = _categoryService.GetUserCategories(id);
             var userCategoryDtos = _mapper.Map<CategoryDto>(userCategories);
             return Ok(userCategoryDtos);
         }
 
-        // POST api/users/:userid/categories
+        // POST api/users/:id/categories
         [HttpPost]
-        [Route("users/{userid}/categories")]
-        public IActionResult CreateUserCategory(int userid, [FromBody]CategoryDto categoryDto)
+        [Route("users/{id}/categories")]
+        public IActionResult CreateUserCategory(int id, [FromBody]CategoryDto categoryDto)
         {
             var category = _mapper.Map<Category>(categoryDto);
 
             try
             {
-                _categoryService.CreateUserCategory(userid, category);
+                _categoryService.CreateUserCategory(id, category);
                 return Ok();
             }
             catch (AppException ex)
