@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using scrimp.Dtos;
+using scrimp.Entities;
+using scrimp.Helpers;
 using scrimp.Services;
 using System;
 
@@ -33,14 +35,27 @@ namespace scrimp.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            throw new NotImplementedException();
+            var user = _userService.GetById(id);
+            var userDto = _mapper.Map<UserDto>(user);
+            return Ok(userDto);
         }
 
         // PUT users/:id
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
         {
-            throw new NotImplementedException();
+            var user = _mapper.Map<User>(userDto);
+            user.Id = id;
+
+            try
+            {
+                _userService.Update(user);
+                return Ok();
+            }
+            catch(AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

@@ -1,21 +1,20 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using scrimp.Dtos;
+using scrimp.Entities;
+using scrimp.Helpers;
 using scrimp.Services;
-using System;
 
 namespace scrimp.Controllers
 {
     [ApiController]
     public class TransactionsController : ControllerBase
     {
-        private IUserService _userService;
         private ITransactionService _transactionService;
         private IMapper _mapper;
 
-        public TransactionsController(IUserService userService, ITransactionService transactionService, IMapper mapper)
+        public TransactionsController(ITransactionService transactionService, IMapper mapper)
         {
-            _userService = userService;
             _transactionService = transactionService;
             _mapper = mapper;
         }
@@ -24,42 +23,71 @@ namespace scrimp.Controllers
         [HttpGet("transaction_accounts/:id/transactions")]
         public IActionResult GetTransactionAccountTransactions(int id)
         {
-            throw new NotImplementedException();
+            var transactionAccountTransactions = _transactionService.GetTransactionAccountTransactions(id);
+            var transactionAccountTransactionDtos = _mapper.Map<TransactionDto>(transactionAccountTransactions);
+            return Ok(transactionAccountTransactionDtos);
         }
 
         // GET accounts/:id/transactions
         [HttpGet("accounts/:id/transactions")]
         public IActionResult GetAccountTransactions(int id)
         {
-            throw new NotImplementedException();
+            var accountTransactions = _transactionService.GetAccountTransactions(id);
+            var accountTransactionDtos = _mapper.Map<TransactionDto>(accountTransactions);
+            return Ok(accountTransactionDtos);
         }
 
         // GET users/:id/transactions
         [HttpGet("users/:id/transactions")]
         public IActionResult GetUserTransactions(int id)
         {
-            throw new NotImplementedException();
+            var userTransactions = _transactionService.GetUserTransactions(id);
+            var userTransactionDtos = _mapper.Map<TransactionDto>(userTransactions);
+            return Ok(userTransactionDtos);
         }
 
         // POST transaction_accounts/:id/transactions
         [HttpPost("transaction_accounts/:id/transactions")]
         public IActionResult CreateTransactionAccountTransaction(int id, [FromBody]TransactionDto transactionDto)
         {
-            throw new NotImplementedException();
+            var transaction = _mapper.Map<Transaction>(transactionDto);
+
+            try
+            {
+                _transactionService.CreateTransactionAccountTransaction(id, transaction);
+                return Ok();
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // GET transactions/:id
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            throw new NotImplementedException();
+            var transaction = _transactionService.GetById(id);
+            var transactionDto = _mapper.Map<TransactionDto>(transaction);
+            return Ok(transactionDto);
         }
 
         // PUT transactions/:id
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody]TransactionDto transactionDto)
         {
-            throw new NotImplementedException();
+            var transaction = _mapper.Map<Transaction>(transactionDto);
+            transaction.Id = id;
+
+            try
+            {
+                _transactionService.Update(transaction);
+                return Ok();
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }
