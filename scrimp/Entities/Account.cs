@@ -7,6 +7,7 @@ namespace scrimp.Entities
     public class Account
     {
         public int Id { get; set; }
+        public int UserId { get; set; }
         public string Name { get; set; }
         public string CurrencyCode { get; set; }
         public AccountType Type { get; set; }

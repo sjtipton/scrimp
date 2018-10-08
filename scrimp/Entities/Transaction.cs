@@ -7,6 +7,9 @@ namespace scrimp.Entities
     public class Transaction
     {
         public int Id { get; set; }
+        public int UserId { get; set; }
+        public int TransactionAccountId { get; set; }
+        public int AccountId { get; set; }
         public string CheckNumber { get; set; }
         public TransactionType Type { get; set; }
         public string Memo { get; set; }
