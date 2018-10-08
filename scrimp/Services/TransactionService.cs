@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using scrimp.Entities;
+using scrimp.Helpers;
 
 namespace scrimp.Services
 {
@@ -13,34 +14,56 @@ namespace scrimp.Services
             _context = context;
         }
 
-        public Transaction CreateTransactionAccountTransaction(int id, Transaction account)
+        public Transaction CreateTransactionAccountTransaction(int transactionAccountId, Transaction transaction)
         {
-            throw new NotImplementedException();
+            var transactionAccount = _context.TransactionAccounts.Find(transactionAccountId);
+            transaction.TransactionAccount = transactionAccount ?? throw new AppException("Transaction Account not found. Cannot create an Transaction.");
+
+            _context.Transactions.Add(transaction);
+            _context.SaveChanges();
+
+            return transaction;
         }
 
-        public IEnumerable<Transaction> GetAccountTransactions(int id)
+        public IEnumerable<Transaction> GetAccountTransactions(int accountId)
         {
-            throw new NotImplementedException();
+            return _context.Transactions.Where(x => x.AccountId == accountId).ToList();
         }
 
         public Transaction GetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Transactions.Find(id);
         }
 
-        public IEnumerable<Transaction> GetTransactionAccountTransactions(int id)
+        public IEnumerable<Transaction> GetTransactionAccountTransactions(int transactionAccountId)
         {
-            throw new NotImplementedException();
+            return _context.Transactions.Where(x => x.TransactionAccountId == transactionAccountId).ToList();
         }
 
-        public IEnumerable<Transaction> GetUserTransactions(int id)
+        public IEnumerable<Transaction> GetUserTransactions(int userId)
         {
-            throw new NotImplementedException();
+            return _context.Transactions.Where(x => x.UserId == userId).ToList();
         }
 
-        public void Update(int id, Transaction category)
+        public void Update(Transaction transactionParam)
         {
-            throw new NotImplementedException();
+            var transaction = _context.Transactions.Find(transactionParam.Id);
+
+            if (transaction == null)
+                throw new AppException("Transaction not found. Cannot update a Transaction.");
+
+            transaction.Payee = transactionParam.Payee;
+            transaction.Amount = transactionParam.Amount;
+            transaction.AnticipatedDate = transactionParam.AnticipatedDate;
+            transaction.IsTransfer = transactionParam.IsTransfer;
+            transaction.Labels = transactionParam.Labels;
+            transaction.Category = transactionParam.Category;
+            transaction.Note = transactionParam.Note;
+            transaction.Memo = transactionParam.Memo;
+            transaction.CheckNumber = transactionParam.CheckNumber;
+
+            _context.Transactions.Update(transaction);
+            _context.SaveChanges();
         }
     }
 }

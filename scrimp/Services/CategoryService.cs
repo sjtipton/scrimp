@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using scrimp.Entities;
+using scrimp.Helpers;
 
 namespace scrimp.Services
 {
@@ -13,29 +14,60 @@ namespace scrimp.Services
             _context = context;
         }
 
-        public Category CreateUserCategory(int id, Category account)
+        public Category CreateUserCategory(int userId, Category category)
         {
-            throw new NotImplementedException();
+            var user = _context.Users.Find(userId);
+
+            if (user == null)
+                throw new AppException("User not found. Cannot create an Category.");
+
+            category.UserId = user.Id;
+
+            _context.Categories.Add(category);
+            _context.SaveChanges();
+
+            return category;
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            var category = _context.Categories.Find(id);
+            if (category != null)
+            {
+                _context.Categories.Remove(category);
+                _context.SaveChanges();
+            }
         }
 
         public Category GetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Categories.Find(id);
         }
 
-        public IEnumerable<Category> GetUserCategories(int id)
+        public IEnumerable<Category> GetUserCategories(int userId)
         {
-            throw new NotImplementedException();
+            return _context.Categories.Where(x => x.UserId == userId).ToList();
         }
 
-        public void Update(int id, Category category)
+        public void Update(int userId, Category categoryParam)
         {
-            throw new NotImplementedException();
+            var user = _context.Users.Find(userId);
+
+            if (user == null)
+                throw new AppException("User not found. Cannot update an Category.");
+
+            var category = _context.Categories.Find(categoryParam.Id);
+
+            if (category == null)
+                throw new AppException("Category not found. Cannot update an Category.");
+
+            category.Name = categoryParam.Name;
+            category.Color = categoryParam.Color;
+            category.ParentId = categoryParam.ParentId;
+            category.IsTransfer = categoryParam.IsTransfer;
+
+            _context.Categories.Update(category);
+            _context.SaveChanges();
         }
     }
 }

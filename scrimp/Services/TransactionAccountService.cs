@@ -1,6 +1,6 @@
 ﻿using scrimp.Entities;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace scrimp.Services
 {
@@ -15,12 +15,12 @@ namespace scrimp.Services
 
         public TransactionAccount GetById(int id)
         {
-            throw new NotImplementedException();
+            return _context.TransactionAccounts.Find(id);
         }
 
-        public IEnumerable<TransactionAccount> GetUserTransactionAccounts(int id)
+        public IEnumerable<TransactionAccount> GetUserTransactionAccounts(int userId)
         {
-            throw new NotImplementedException();
+            return _context.TransactionAccounts.Where(x => x.UserId == userId).ToList();
         }
     }
 }
