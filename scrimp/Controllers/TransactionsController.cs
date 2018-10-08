@@ -8,7 +8,7 @@ using scrimp.Services;
 namespace scrimp.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api")]
     public class TransactionsController : ControllerBase
     {
         private ITransactionService _transactionService;
@@ -20,46 +20,46 @@ namespace scrimp.Controllers
             _mapper = mapper;
         }
 
-        // GET transaction_accounts/:id/transactions
+        // GET api/transaction_accounts/:userid/transactions
         [HttpGet]
-        [Route("~/transaction_accounts/:id/transactions")]
-        public IActionResult GetTransactionAccountTransactions(int id)
+        [Route("transaction_accounts/{userid}/transactions")]
+        public IActionResult GetTransactionAccountTransactions(int userid)
         {
-            var transactionAccountTransactions = _transactionService.GetTransactionAccountTransactions(id);
+            var transactionAccountTransactions = _transactionService.GetTransactionAccountTransactions(userid);
             var transactionAccountTransactionDtos = _mapper.Map<TransactionDto>(transactionAccountTransactions);
             return Ok(transactionAccountTransactionDtos);
         }
 
-        // GET accounts/:id/transactions
+        // GET api/accounts/:userid/transactions
         [HttpGet]
-        [Route("~/accounts/:id/transactions")]
-        public IActionResult GetAccountTransactions(int id)
+        [Route("accounts/{userid}/transactions")]
+        public IActionResult GetAccountTransactions(int userid)
         {
-            var accountTransactions = _transactionService.GetAccountTransactions(id);
+            var accountTransactions = _transactionService.GetAccountTransactions(userid);
             var accountTransactionDtos = _mapper.Map<TransactionDto>(accountTransactions);
             return Ok(accountTransactionDtos);
         }
 
-        // GET users/:id/transactions
+        // GET api/users/:userid/transactions
         [HttpGet]
-        [Route("~/users/:id/transactions")]
-        public IActionResult GetUserTransactions(int id)
+        [Route("users/{userid}/transactions")]
+        public IActionResult GetUserTransactions(int userid)
         {
-            var userTransactions = _transactionService.GetUserTransactions(id);
+            var userTransactions = _transactionService.GetUserTransactions(userid);
             var userTransactionDtos = _mapper.Map<TransactionDto>(userTransactions);
             return Ok(userTransactionDtos);
         }
 
-        // POST transaction_accounts/:id/transactions
+        // POST api/transaction_accounts/:userid/transactions
         [HttpPost]
-        [Route("~/transaction_accounts/:id/transactions")]
-        public IActionResult CreateTransactionAccountTransaction(int id, [FromBody]TransactionDto transactionDto)
+        [Route("transaction_accounts/{userid}/transactions")]
+        public IActionResult CreateTransactionAccountTransaction(int userid, [FromBody]TransactionDto transactionDto)
         {
             var transaction = _mapper.Map<Transaction>(transactionDto);
 
             try
             {
-                _transactionService.CreateTransactionAccountTransaction(id, transaction);
+                _transactionService.CreateTransactionAccountTransaction(userid, transaction);
                 return Ok();
             }
             catch (AppException ex)
@@ -68,8 +68,8 @@ namespace scrimp.Controllers
             }
         }
 
-        // GET transactions/:id
-        [HttpGet("{id}")]
+        // GET api/transactions/:id
+        [HttpGet("transactions/{id}")]
         public IActionResult GetById(int id)
         {
             var transaction = _transactionService.GetById(id);
@@ -77,8 +77,8 @@ namespace scrimp.Controllers
             return Ok(transactionDto);
         }
 
-        // PUT transactions/:id
-        [HttpPut("{id}")]
+        // PUT api/transactions/:id
+        [HttpPut("transactions/{id}")]
         public IActionResult Update(int id, [FromBody]TransactionDto transactionDto)
         {
             var transaction = _mapper.Map<Transaction>(transactionDto);

@@ -8,7 +8,7 @@ using scrimp.Services;
 namespace scrimp.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/users/{userid}/accounts")]
     public class AccountsController : ControllerBase
     {
         private IAccountService _accountService;
@@ -20,26 +20,24 @@ namespace scrimp.Controllers
             _mapper = mapper;
         }
 
-        // GET users/:id/accounts
+        // GET api/users/:userid/accounts
         [HttpGet]
-        [Route("~/users/:id/accounts")]
-        public IActionResult GetUserAccounts(int id)
+        public IActionResult GetUserAccounts(int userid)
         {
-            var userAccounts = _accountService.GetUserAccounts(id);
+            var userAccounts = _accountService.GetUserAccounts(userid);
             var userAccountDtos = _mapper.Map<AccountDto>(userAccounts);
             return Ok(userAccountDtos);
         }
 
-        // POST users/:id/accounts
+        // POST api/users/:userid/accounts
         [HttpPost]
-        [Route("~/users/:id/accounts")]
-        public IActionResult CreateUserAccount(int id, [FromBody]AccountDto accountDto)
+        public IActionResult CreateUserAccount(int userid, [FromBody]AccountDto accountDto)
         {
             var account = _mapper.Map<Account>(accountDto);
 
             try
             {
-                _accountService.CreateUserAccount(id, account);
+                _accountService.CreateUserAccount(userid, account);
                 return Ok();
             }
             catch(AppException ex)
@@ -48,8 +46,8 @@ namespace scrimp.Controllers
             }
         }
 
-        // GET accounts/:id
-        [HttpGet("{id}")]
+        // GET api/accounts/:id
+        [HttpGet("~/api/accounts/{id}")]
         public IActionResult GetById(int id)
         {
             var account = _accountService.GetById(id);
@@ -57,8 +55,8 @@ namespace scrimp.Controllers
             return Ok(accountDto);
         }
 
-        // PUT accounts/:id
-        [HttpPut("{id}")]
+        // PUT api/accounts/:id
+        [HttpPut("~/api/accounts/{id}")]
         public IActionResult Update(int id, [FromBody]AccountDto accountDto)
         {
             var account = _mapper.Map<Account>(accountDto);
@@ -75,8 +73,8 @@ namespace scrimp.Controllers
             }
         }
 
-        // DELETE accounts/:id
-        [HttpDelete("{id}")]
+        // DELETE api/accounts/:id
+        [HttpDelete("~/api/accounts/{id}")]
         public IActionResult Delete(int id)
         {
             _accountService.Delete(id);

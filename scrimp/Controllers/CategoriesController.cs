@@ -8,7 +8,7 @@ using scrimp.Services;
 namespace scrimp.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api")]
     public class CategoriesController : ControllerBase
     {
         private ICategoryService _categoryService;
@@ -20,26 +20,26 @@ namespace scrimp.Controllers
             _mapper = mapper;
         }
 
-        // GET users/:id/categories
+        // GET api/users/:userid/categories
         [HttpGet]
-        [Route("~/users/:id/categories")]
-        public IActionResult GetUserCategories(int id)
+        [Route("users/{userid}/categories")]
+        public IActionResult GetUserCategories(int userid)
         {
-            var userCategories = _categoryService.GetUserCategories(id);
+            var userCategories = _categoryService.GetUserCategories(userid);
             var userCategoryDtos = _mapper.Map<CategoryDto>(userCategories);
             return Ok(userCategoryDtos);
         }
 
-        // POST users/:id/categories
+        // POST api/users/:userid/categories
         [HttpPost]
-        [Route("~/users/:id/categories")]
-        public IActionResult CreateUserCategory(int id, [FromBody]CategoryDto categoryDto)
+        [Route("users/{userid}/categories")]
+        public IActionResult CreateUserCategory(int userid, [FromBody]CategoryDto categoryDto)
         {
             var category = _mapper.Map<Category>(categoryDto);
 
             try
             {
-                _categoryService.CreateUserCategory(id, category);
+                _categoryService.CreateUserCategory(userid, category);
                 return Ok();
             }
             catch (AppException ex)
@@ -48,8 +48,8 @@ namespace scrimp.Controllers
             }
         }
 
-        // GET categories/:id
-        [HttpGet("{id}")]
+        // GET api/categories/:id
+        [HttpGet("categories/{id}")]
         public IActionResult GetById(int id)
         {
             var category = _categoryService.GetById(id);
@@ -57,8 +57,8 @@ namespace scrimp.Controllers
             return Ok(categoryDto);
         }
 
-        // PUT categories/:id
-        [HttpPut("{id}")]
+        // PUT api/categories/:id
+        [HttpPut("categories/{id}")]
         public IActionResult Update(int id, [FromBody]CategoryDto categoryDto)
         {
             var category = _mapper.Map<Category>(categoryDto);
@@ -75,8 +75,8 @@ namespace scrimp.Controllers
             }
         }
 
-        // DELETE categories/:id
-        [HttpDelete("{id}")]
+        // DELETE api/categories/:id
+        [HttpDelete("categories/{id}")]
         public IActionResult Delete(int id)
         {
             _categoryService.Delete(id);

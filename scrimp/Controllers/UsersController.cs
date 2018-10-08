@@ -10,7 +10,7 @@ namespace scrimp.Controllers
 {
     // TODO add Authorization
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/users")]
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
@@ -24,15 +24,15 @@ namespace scrimp.Controllers
 
         // TODO consider authenticate/authorize/register endpoints
 
-        // GET me
+        // GET api/me
         [HttpGet]
-        [Route("~/me")]
+        [Route("~/api/me")]
         public IActionResult GetAuthenticatedUser()
         {
             throw new NotImplementedException();
         }
 
-        // GET users/:id
+        // GET api/users/:id
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
@@ -41,7 +41,7 @@ namespace scrimp.Controllers
             return Ok(userDto);
         }
 
-        // PUT users/:id
+        // PUT api/users/:id
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
         {
