@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using scrimp.Entities;
+using scrimp.Services;
 
 namespace scrimp
 {
@@ -68,8 +69,11 @@ namespace scrimp
             //    };
             //});
 
-            // configure DI for application services
-            // services.AddScoped<Foo, Bar>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ITransactionAccountService, TransactionAccountService>();
+            services.AddScoped<ITransactionService, TransactionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
