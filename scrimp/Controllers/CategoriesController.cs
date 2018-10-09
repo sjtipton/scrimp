@@ -12,11 +12,13 @@ namespace scrimp.Controllers
     [Route("api")]
     public class CategoriesController : ControllerBase
     {
+        private IUserService _userService;
         private ICategoryService _categoryService;
         private IMapper _mapper;
 
-        public CategoriesController(ICategoryService categoryService, IMapper mapper)
+        public CategoriesController(IUserService userService, ICategoryService categoryService, IMapper mapper)
         {
+            _userService = userService;
             _categoryService = categoryService;
             _mapper = mapper;
         }
@@ -26,9 +28,20 @@ namespace scrimp.Controllers
         [Route("users/{id}/categories")]
         public IActionResult GetUserCategories(int id)
         {
-            var userCategories = _categoryService.GetUserCategories(id);
-            var userCategoryDtos = _mapper.Map<IEnumerable<CategoryDto>>(userCategories);
-            return Ok(userCategoryDtos);
+            var user = _userService.GetById(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user is User)
+            {
+                var userCategories = _categoryService.GetUserCategories(id);
+                var userCategoryDtos = _mapper.Map<IEnumerable<CategoryDto>>(userCategories);
+                return Ok(userCategoryDtos);
+            }
+            return BadRequest("The user is not valid.");
         }
 
         // POST api/users/:id/categories
@@ -36,17 +49,28 @@ namespace scrimp.Controllers
         [Route("users/{id}/categories")]
         public IActionResult CreateUserCategory(int id, [FromBody]CategoryDto categoryDto)
         {
-            var category = _mapper.Map<Category>(categoryDto);
+            var user = _userService.GetById(id);
 
-            try
+            if (user == null)
             {
-                _categoryService.CreateUserCategory(id, category);
-                return Ok();
+                return NotFound();
             }
-            catch (AppException ex)
+
+            if (user is User)
             {
-                return BadRequest(new { message = ex.Message });
+                var category = _mapper.Map<Category>(categoryDto);
+
+                try
+                {
+                    _categoryService.CreateUserCategory(id, category);
+                    return Ok();
+                }
+                catch (AppException ex)
+                {
+                    return BadRequest(new { message = ex.Message });
+                }
             }
+            return BadRequest("The user is not valid.");
         }
 
         // GET api/categories/:id

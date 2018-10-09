@@ -12,11 +12,13 @@ namespace scrimp.Controllers
     [Route("api/users/{id}/accounts")]
     public class AccountsController : ControllerBase
     {
+        private IUserService _userService;
         private IAccountService _accountService;
         private IMapper _mapper;
 
-        public AccountsController(IAccountService accountService, IMapper mapper)
+        public AccountsController(IUserService userService, IAccountService accountService, IMapper mapper)
         {
+            _userService = userService;
             _accountService = accountService;
             _mapper = mapper;
         }
@@ -25,26 +27,48 @@ namespace scrimp.Controllers
         [HttpGet]
         public IActionResult GetUserAccounts(int id)
         {
-            var userAccounts = _accountService.GetUserAccounts(id);
-            var userAccountDtos = _mapper.Map<IEnumerable<AccountDto>>(userAccounts);
-            return Ok(userAccountDtos);
+            var user = _userService.GetById(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user is User)
+            {
+                var userAccounts = _accountService.GetUserAccounts(id);
+                var userAccountDtos = _mapper.Map<IEnumerable<AccountDto>>(userAccounts);
+                return Ok(userAccountDtos);
+            }
+            return BadRequest("The user is not valid.");
         }
 
         // POST api/users/:id/accounts
         [HttpPost]
         public IActionResult CreateUserAccount(int id, [FromBody]AccountDto accountDto)
         {
-            var account = _mapper.Map<Account>(accountDto);
+            var user = _userService.GetById(id);
 
-            try
+            if (user == null)
             {
-                _accountService.CreateUserAccount(id, account);
-                return Ok();
+                return NotFound();
             }
-            catch(AppException ex)
+
+            if (user is User)
             {
-                return BadRequest(new { message = ex.Message });
+                var account = _mapper.Map<Account>(accountDto);
+
+                try
+                {
+                    _accountService.CreateUserAccount(id, account);
+                    return Ok();
+                }
+                catch (AppException ex)
+                {
+                    return BadRequest(new { message = ex.Message });
+                }
             }
+            return BadRequest("The user is not valid.");
         }
 
         // GET api/accounts/:id

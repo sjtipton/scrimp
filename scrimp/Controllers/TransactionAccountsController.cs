@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using scrimp.Entities;
 using scrimp.Dtos;
 using scrimp.Services;
 using System.Collections.Generic;
@@ -10,11 +11,13 @@ namespace scrimp.Controllers
     [Route("api")]
     public class TransactionAccountsController : ControllerBase
     {
+        private IUserService _userService;
         private ITransactionAccountService _transactionAccountService;
         private IMapper _mapper;
 
-        public TransactionAccountsController(ITransactionAccountService transactionAccountService, IMapper mapper)
+        public TransactionAccountsController(IUserService userService, ITransactionAccountService transactionAccountService, IMapper mapper)
         {
+            _userService = userService;
             _transactionAccountService = transactionAccountService;
             _mapper = mapper;
         }
@@ -24,9 +27,20 @@ namespace scrimp.Controllers
         [Route("users/{id}/transaction_accounts")]
         public IActionResult GetUserTransactionAccounts(int id)
         {
-            var userTransactionAccounts = _transactionAccountService.GetUserTransactionAccounts(id);
-            var userTransactionAccountDtos = _mapper.Map<IEnumerable<TransactionAccountDto>>(userTransactionAccounts);
-            return Ok(userTransactionAccountDtos);
+            var user = _userService.GetById(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user is User)
+            {
+                var userTransactionAccounts = _transactionAccountService.GetUserTransactionAccounts(id);
+                var userTransactionAccountDtos = _mapper.Map<IEnumerable<TransactionAccountDto>>(userTransactionAccounts);
+                return Ok(userTransactionAccountDtos);
+            }
+            return BadRequest("The user is not valid.");
         }
 
         // GET api/transaction_accounts/:id

@@ -12,11 +12,17 @@ namespace scrimp.Controllers
     [Route("api")]
     public class TransactionsController : ControllerBase
     {
+        private IUserService _userService;
+        private IAccountService _accountService;
+        private ITransactionAccountService _transactionAccountService;
         private ITransactionService _transactionService;
         private IMapper _mapper;
 
-        public TransactionsController(ITransactionService transactionService, IMapper mapper)
+        public TransactionsController(IUserService userService, IAccountService accountService, ITransactionAccountService transactionAccountService, ITransactionService transactionService, IMapper mapper)
         {
+            _userService = userService;
+            _accountService = accountService;
+            _transactionAccountService = transactionAccountService;
             _transactionService = transactionService;
             _mapper = mapper;
         }
@@ -26,9 +32,20 @@ namespace scrimp.Controllers
         [Route("transaction_accounts/{id}/transactions")]
         public IActionResult GetTransactionAccountTransactions(int id)
         {
-            var transactionAccountTransactions = _transactionService.GetTransactionAccountTransactions(id);
-            var transactionAccountTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(transactionAccountTransactions);
-            return Ok(transactionAccountTransactionDtos);
+            var transactionAccount = _transactionAccountService.GetById(id);
+
+            if (transactionAccount == null)
+            {
+                return NotFound();
+            }
+
+            if (transactionAccount is TransactionAccount)
+            {
+                var transactionAccountTransactions = _transactionService.GetTransactionAccountTransactions(id);
+                var transactionAccountTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(transactionAccountTransactions);
+                return Ok(transactionAccountTransactionDtos);
+            }
+            return BadRequest("The transaction account is not valid.");
         }
 
         // GET api/accounts/:id/transactions
@@ -36,9 +53,20 @@ namespace scrimp.Controllers
         [Route("accounts/{id}/transactions")]
         public IActionResult GetAccountTransactions(int id)
         {
-            var accountTransactions = _transactionService.GetAccountTransactions(id);
-            var accountTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(accountTransactions);
-            return Ok(accountTransactionDtos);
+            var account = _accountService.GetById(id);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            if (account is Account)
+            {
+                var accountTransactions = _transactionService.GetAccountTransactions(id);
+                var accountTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(accountTransactions);
+                return Ok(accountTransactionDtos);
+            }
+            return BadRequest("The account is not valid.");
         }
 
         // GET api/users/:id/transactions
@@ -46,9 +74,20 @@ namespace scrimp.Controllers
         [Route("users/{id}/transactions")]
         public IActionResult GetUserTransactions(int id)
         {
-            var userTransactions = _transactionService.GetUserTransactions(id);
-            var userTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(userTransactions);
-            return Ok(userTransactionDtos);
+            var user = _userService.GetById(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user is User)
+            {
+                var userTransactions = _transactionService.GetUserTransactions(id);
+                var userTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(userTransactions);
+                return Ok(userTransactionDtos);
+            }
+            return BadRequest("The user is not valid.");
         }
 
         // POST api/transaction_accounts/:id/transactions
@@ -56,17 +95,28 @@ namespace scrimp.Controllers
         [Route("transaction_accounts/{id}/transactions")]
         public IActionResult CreateTransactionAccountTransaction(int id, [FromBody]TransactionDto transactionDto)
         {
-            var transaction = _mapper.Map<Transaction>(transactionDto);
+            var transactionAccount = _transactionAccountService.GetById(id);
 
-            try
+            if (transactionAccount == null)
             {
-                _transactionService.CreateTransactionAccountTransaction(id, transaction);
-                return Ok();
+                return NotFound();
             }
-            catch (AppException ex)
+
+            if (transactionAccount is TransactionAccount)
             {
-                return BadRequest(new { message = ex.Message });
+                var transaction = _mapper.Map<Transaction>(transactionDto);
+
+                try
+                {
+                    _transactionService.CreateTransactionAccountTransaction(id, transaction);
+                    return Ok();
+                }
+                catch (AppException ex)
+                {
+                    return BadRequest(new { message = ex.Message });
+                }
             }
+            return BadRequest("The transaction account is not valid.");
         }
 
         // GET api/transactions/:id
