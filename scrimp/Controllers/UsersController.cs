@@ -37,8 +37,18 @@ namespace scrimp.Controllers
         public IActionResult GetById(int id)
         {
             var user = _userService.GetById(id);
-            var userDto = _mapper.Map<UserDto>(user);
-            return Ok(userDto);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user is User)
+            {
+                var userDto = _mapper.Map<UserDto>(user);
+                return Ok(userDto);
+            }
+            return BadRequest("The user is not valid.");
         }
 
         // PUT api/users/:id
