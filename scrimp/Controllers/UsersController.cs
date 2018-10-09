@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using scrimp.Domain;
 using scrimp.Dtos;
 using scrimp.Entities;
 using scrimp.Helpers;
@@ -40,7 +41,14 @@ namespace scrimp.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                // TODO expand on this pattern and then refactor into a helper
+                return NotFound(new Error {
+                    Id = Guid.NewGuid(),
+                    Status = HttpStatus.NotFound,
+                    Code = HttpStatus.NotFound.ToString(),
+                    Title = "User Not Found",
+                    Detail = $"The User identified by id {id} was not found."
+                });
             }
 
             if (user is User)
@@ -48,7 +56,15 @@ namespace scrimp.Controllers
                 var userDto = _mapper.Map<UserDto>(user);
                 return Ok(userDto);
             }
-            return BadRequest("The user is not valid.");
+            //return BadRequest("The user is not valid.");
+            return BadRequest(new Error
+            {
+                Id = Guid.NewGuid(),
+                Status = HttpStatus.BadRequest,
+                Code = HttpStatus.BadRequest.ToString(),
+                Title = "Bad Request",
+                Detail = $"The User is not valid."
+            });
         }
 
         // PUT api/users/:id
@@ -65,7 +81,16 @@ namespace scrimp.Controllers
             }
             catch(AppException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                //return BadRequest(new { message = ex.Message });
+                return BadRequest(new Error
+                {
+                    Id = Guid.NewGuid(),
+                    Status = HttpStatus.BadRequest,
+                    Code = HttpStatus.BadRequest.ToString(),
+                    Title = "Bad Request",
+                    Detail = ex.Message,
+                    InnerException = ex
+                });
             }
         }
     }
