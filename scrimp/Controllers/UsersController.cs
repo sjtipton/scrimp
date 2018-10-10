@@ -56,14 +56,13 @@ namespace scrimp.Controllers
                 var userDto = _mapper.Map<UserDto>(user);
                 return Ok(userDto);
             }
-            //return BadRequest("The user is not valid.");
             return BadRequest(new Error
             {
                 Id = Guid.NewGuid(),
                 Status = HttpStatus.BadRequest,
                 Code = HttpStatus.BadRequest.ToString(),
                 Title = "Bad Request",
-                Detail = $"The User is not valid."
+                Detail = $"The User identified by id {id} is not valid."
             });
         }
 
@@ -81,7 +80,6 @@ namespace scrimp.Controllers
             }
             catch(AppException ex)
             {
-                //return BadRequest(new { message = ex.Message });
                 return BadRequest(new Error
                 {
                     Id = Guid.NewGuid(),
