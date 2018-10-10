@@ -42,13 +42,7 @@ namespace scrimp.Controllers
             if (user == null)
             {
                 // TODO expand on this pattern and then refactor into a helper
-                return NotFound(new Error {
-                    Id = Guid.NewGuid(),
-                    Status = HttpStatus.NotFound,
-                    Code = HttpStatus.NotFound.ToString(),
-                    Title = "User Not Found",
-                    Detail = $"The User identified by id {id} was not found."
-                });
+                return NotFound(ApiErrors.GetErrors(HttpStatus.NotFound, "User Not Found", $"The User identified by id {id} was not found.", null));
             }
 
             if (user is User)
@@ -56,14 +50,7 @@ namespace scrimp.Controllers
                 var userDto = _mapper.Map<UserDto>(user);
                 return Ok(userDto);
             }
-            return BadRequest(new Error
-            {
-                Id = Guid.NewGuid(),
-                Status = HttpStatus.BadRequest,
-                Code = HttpStatus.BadRequest.ToString(),
-                Title = "Bad Request",
-                Detail = $"The User identified by id {id} is not valid."
-            });
+            return BadRequest(ApiErrors.GetErrors(HttpStatus.BadRequest, "Bad Request", $"The User identified by id {id} is not valid.", null));
         }
 
         // PUT api/users/:id
@@ -80,15 +67,7 @@ namespace scrimp.Controllers
             }
             catch(AppException ex)
             {
-                return BadRequest(new Error
-                {
-                    Id = Guid.NewGuid(),
-                    Status = HttpStatus.BadRequest,
-                    Code = HttpStatus.BadRequest.ToString(),
-                    Title = "Bad Request",
-                    Detail = ex.Message,
-                    InnerException = ex
-                });
+                return BadRequest(ApiErrors.GetErrors(HttpStatus.BadRequest, "Bad Request", ex.Message, ex));
             }
         }
     }
