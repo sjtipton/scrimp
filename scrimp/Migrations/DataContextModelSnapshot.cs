@@ -78,24 +78,6 @@ namespace scrimp.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("scrimp.Entities.Error", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Code");
-
-                    b.Property<string>("Detail");
-
-                    b.Property<int>("Status");
-
-                    b.Property<string>("Title");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Errors");
-                });
-
             modelBuilder.Entity("scrimp.Entities.Transaction", b =>
                 {
                     b.Property<int>("Id")
@@ -233,27 +215,6 @@ namespace scrimp.Migrations
                     b.HasOne("scrimp.Entities.Category")
                         .WithMany("Children")
                         .HasForeignKey("CategoryId");
-                });
-
-            modelBuilder.Entity("scrimp.Entities.Error", b =>
-                {
-                    b.OwnsOne("System.Exception", "InnerException", b1 =>
-                        {
-                            b1.Property<Guid?>("ErrorId");
-
-                            b1.Property<int>("HResult");
-
-                            b1.Property<string>("HelpLink");
-
-                            b1.Property<string>("Source");
-
-                            b1.ToTable("Errors");
-
-                            b1.HasOne("scrimp.Entities.Error")
-                                .WithOne("InnerException")
-                                .HasForeignKey("System.Exception", "ErrorId")
-                                .OnDelete(DeleteBehavior.Cascade);
-                        });
                 });
 
             modelBuilder.Entity("scrimp.Entities.Transaction", b =>
