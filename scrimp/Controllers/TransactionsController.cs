@@ -16,14 +16,22 @@ namespace scrimp.Controllers
         private IAccountService _accountService;
         private ITransactionAccountService _transactionAccountService;
         private ITransactionService _transactionService;
+        private IErrorService _errorService;
         private IMapper _mapper;
 
-        public TransactionsController(IUserService userService, IAccountService accountService, ITransactionAccountService transactionAccountService, ITransactionService transactionService, IMapper mapper)
+        public TransactionsController(
+            IUserService userService,
+            IAccountService accountService,
+            ITransactionAccountService transactionAccountService,
+            ITransactionService transactionService,
+            IErrorService errorService,
+            IMapper mapper)
         {
             _userService = userService;
             _accountService = accountService;
             _transactionAccountService = transactionAccountService;
             _transactionService = transactionService;
+            _errorService = errorService;
             _mapper = mapper;
         }
 
@@ -36,7 +44,7 @@ namespace scrimp.Controllers
 
             if (transactionAccount == null)
             {
-                return NotFound();
+                return NotFound(_errorService.NotFound("transaction account", id));
             }
 
             if (transactionAccount is TransactionAccount)
@@ -45,7 +53,7 @@ namespace scrimp.Controllers
                 var transactionAccountTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(transactionAccountTransactions);
                 return Ok(transactionAccountTransactionDtos);
             }
-            return BadRequest("The transaction account is not valid.");
+            return BadRequest(_errorService.BadRequest("transaction account", id));
         }
 
         // GET api/accounts/:id/transactions
@@ -57,7 +65,7 @@ namespace scrimp.Controllers
 
             if (account == null)
             {
-                return NotFound();
+                return NotFound(_errorService.NotFound("account", id));
             }
 
             if (account is Account)
@@ -66,7 +74,7 @@ namespace scrimp.Controllers
                 var accountTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(accountTransactions);
                 return Ok(accountTransactionDtos);
             }
-            return BadRequest("The account is not valid.");
+            return BadRequest(_errorService.BadRequest("account", id));
         }
 
         // GET api/users/:id/transactions
@@ -78,7 +86,7 @@ namespace scrimp.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound(_errorService.NotFound("user", id));
             }
 
             if (user is User)
@@ -87,7 +95,7 @@ namespace scrimp.Controllers
                 var userTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(userTransactions);
                 return Ok(userTransactionDtos);
             }
-            return BadRequest("The user is not valid.");
+            return BadRequest(_errorService.BadRequest("user", id));
         }
 
         // POST api/transaction_accounts/:id/transactions
@@ -99,7 +107,7 @@ namespace scrimp.Controllers
 
             if (transactionAccount == null)
             {
-                return NotFound();
+                return NotFound(_errorService.NotFound("transaction account", id));
             }
 
             if (transactionAccount is TransactionAccount)
@@ -113,10 +121,10 @@ namespace scrimp.Controllers
                 }
                 catch (AppException ex)
                 {
-                    return BadRequest(new { message = ex.Message });
+                    return BadRequest(_errorService.BadRequest(ex));
                 }
             }
-            return BadRequest("The transaction account is not valid.");
+            return BadRequest(_errorService.BadRequest("transaction account", id));
         }
 
         // GET api/transactions/:id
@@ -142,7 +150,7 @@ namespace scrimp.Controllers
             }
             catch (AppException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(_errorService.BadRequest(ex));
             }
         }
     }
