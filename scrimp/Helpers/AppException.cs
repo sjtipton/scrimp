@@ -5,6 +5,8 @@ namespace scrimp.Helpers
 {
     public class AppException : Exception
     {
+        public Guid Id { get; set; }
+
         public AppException() : base() { }
 
         public AppException(string message) : base(message) { }

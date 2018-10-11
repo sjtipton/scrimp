@@ -1,4 +1,5 @@
 ﻿using scrimp.Domain;
+using scrimp.Helpers;
 using System;
 
 namespace scrimp.Entities
@@ -10,6 +11,6 @@ namespace scrimp.Entities
         public string Code { get; set; }
         public string Title { get; set; }
         public string Detail { get; set; }
-        public Exception InnerException { get; set; }
+        public AppException InnerException { get; set; }
     }
 }
