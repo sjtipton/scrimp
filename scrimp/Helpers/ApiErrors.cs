@@ -7,7 +7,7 @@ namespace scrimp.Helpers
 {
     public static class ApiErrors
     {
-        public static IEnumerable<Error> GetErrors(HttpStatus status, string title, string detail, Exception innerException)
+        public static ErrorList GetErrors(HttpStatus status, string title, string detail, Exception innerException)
         {
             var error = new Error {
                 Id = Guid.NewGuid(),
@@ -18,7 +18,10 @@ namespace scrimp.Helpers
                 InnerException = innerException
             };
 
-            return new List<Error> { error };
+            // TODO send to constructor?
+            return new ErrorList {
+                Errors = new List<Error> { error }
+            };
         }
     }
 }

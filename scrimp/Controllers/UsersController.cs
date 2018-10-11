@@ -41,7 +41,6 @@ namespace scrimp.Controllers
 
             if (user == null)
             {
-                // TODO expand on this pattern and then refactor into a helper
                 return NotFound(ApiErrors.GetErrors(HttpStatus.NotFound, "User Not Found", $"The User identified by id {id} was not found.", null));
             }
 
