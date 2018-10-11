@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using Microsoft.AspNetCore.Http;
 using scrimp.Domain;
 using scrimp.Dtos;
 using scrimp.Entities;
@@ -17,7 +18,7 @@ namespace scrimp.Services
             _context = context;
         }
 
-        public ErrorList BadRequest(string entity, int identifier)
+        public ErrorList BadRequest(string entity, int identifier, HttpRequest request)
         {
             entity = _textInfo.ToTitleCase(entity);
 
@@ -27,7 +28,8 @@ namespace scrimp.Services
                 Status = HttpStatus.BadRequest,
                 Code = HttpStatus.BadRequest.ToString(),
                 Title = "Bad Request",
-                Detail = $"The {entity} identified by id {identifier} is not valid."
+                Detail = $"The {entity} identified by id {identifier} is not valid.",
+                HttpRequest = request.ToHttpRequestMeta()
             };
 
             _context.Errors.Add(error);
@@ -36,7 +38,7 @@ namespace scrimp.Services
             return error.ToErrorList();
         }
 
-        public ErrorList BadRequest(AppException appException)
+        public ErrorList BadRequest(AppException appException, HttpRequest request)
         {
             var error = new Error
             {
@@ -45,7 +47,8 @@ namespace scrimp.Services
                 Code = HttpStatus.BadRequest.ToString(),
                 Title = "Bad Request",
                 Detail = appException.Message,
-                InnerException = appException
+                InnerException = appException,
+                HttpRequest = request.ToHttpRequestMeta()
             };
 
             _context.Errors.Add(error);
@@ -54,7 +57,7 @@ namespace scrimp.Services
             return error.ToErrorList();
         }
 
-        public ErrorList NotFound(string entity, int identifier)
+        public ErrorList NotFound(string entity, int identifier, HttpRequest request)
         {
             entity = _textInfo.ToTitleCase(entity);
 
@@ -64,7 +67,8 @@ namespace scrimp.Services
                 Status = HttpStatus.NotFound,
                 Code = HttpStatus.NotFound.ToString(),
                 Title = $"{entity} Not Found",
-                Detail = $"The {entity} identified by id {identifier} was not found."
+                Detail = $"The {entity} identified by id {identifier} was not found.",
+                HttpRequest = request.ToHttpRequestMeta()
             };
 
             _context.Errors.Add(error);
