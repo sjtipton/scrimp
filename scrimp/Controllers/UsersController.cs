@@ -14,11 +14,13 @@ namespace scrimp.Controllers
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
+        private IErrorService _errorService;
         private IMapper _mapper;
 
-        public UsersController(IUserService userService, IMapper mapper)
+        public UsersController(IUserService userService, IErrorService errorService, IMapper mapper)
         {
             _userService = userService;
+            _errorService = errorService;
             _mapper = mapper;
         }
 
@@ -40,7 +42,7 @@ namespace scrimp.Controllers
 
             if (user == null)
             {
-                return NotFound(ApiErrors.NotFound("user", id));
+                return NotFound(_errorService.NotFound("user", id));
             }
 
             if (user is User)
@@ -48,7 +50,7 @@ namespace scrimp.Controllers
                 var userDto = _mapper.Map<UserDto>(user);
                 return Ok(userDto);
             }
-            return BadRequest(ApiErrors.BadRequest("user", id));
+            return BadRequest(_errorService.BadRequest("user", id));
         }
 
         // PUT api/users/:id
@@ -65,7 +67,7 @@ namespace scrimp.Controllers
             }
             catch(AppException ex)
             {
-                return BadRequest(ApiErrors.BadRequest(ex));
+                return BadRequest(_errorService.BadRequest(ex));
             }
         }
     }
