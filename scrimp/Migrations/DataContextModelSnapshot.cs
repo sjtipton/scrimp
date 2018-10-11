@@ -237,9 +237,9 @@ namespace scrimp.Migrations
 
             modelBuilder.Entity("scrimp.Entities.Error", b =>
                 {
-                    b.OwnsOne("scrimp.Helpers.AppException", "InnerException", b1 =>
+                    b.OwnsOne("System.Exception", "InnerException", b1 =>
                         {
-                            b1.Property<Guid>("Id");
+                            b1.Property<Guid?>("ErrorId");
 
                             b1.Property<int>("HResult");
 
@@ -251,7 +251,7 @@ namespace scrimp.Migrations
 
                             b1.HasOne("scrimp.Entities.Error")
                                 .WithOne("InnerException")
-                                .HasForeignKey("scrimp.Helpers.AppException", "Id")
+                                .HasForeignKey("System.Exception", "ErrorId")
                                 .OnDelete(DeleteBehavior.Cascade);
                         });
                 });
