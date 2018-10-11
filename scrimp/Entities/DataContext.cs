@@ -11,6 +11,7 @@ namespace scrimp.Entities
         public DbSet<Category> Categories { get; set; }
         public DbSet<TransactionAccount> TransactionAccounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Error> Errors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +36,9 @@ namespace scrimp.Entities
             modelBuilder.Entity<TransactionAccount>()
                 .Property(p => p.StartingBalance)
                 .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Error>()
+                .OwnsOne(p => p.InnerException);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using scrimp.Domain;
 using System;
 
-namespace scrimp.Dtos
+namespace scrimp.Entities
 {
     public class Error
     {
