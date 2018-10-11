@@ -42,7 +42,7 @@ namespace scrimp.Controllers
 
             if (user == null)
             {
-                return NotFound(_errorService.NotFound("user", id));
+                return NotFound(_errorService.NotFound("user", id, HttpContext.Request));
             }
 
             if (user is User)
@@ -50,7 +50,7 @@ namespace scrimp.Controllers
                 var userDto = _mapper.Map<UserDto>(user);
                 return Ok(userDto);
             }
-            return BadRequest(_errorService.BadRequest("user", id));
+            return BadRequest(_errorService.BadRequest("user", id, HttpContext.Request));
         }
 
         // PUT api/users/:id
@@ -67,7 +67,7 @@ namespace scrimp.Controllers
             }
             catch(AppException ex)
             {
-                return BadRequest(_errorService.BadRequest(ex));
+                return BadRequest(_errorService.BadRequest(ex, HttpContext.Request));
             }
         }
     }

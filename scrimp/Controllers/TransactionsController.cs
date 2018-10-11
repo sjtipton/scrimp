@@ -44,7 +44,7 @@ namespace scrimp.Controllers
 
             if (transactionAccount == null)
             {
-                return NotFound(_errorService.NotFound("transaction account", id));
+                return NotFound(_errorService.NotFound("transaction account", id, HttpContext.Request));
             }
 
             if (transactionAccount is TransactionAccount)
@@ -53,7 +53,7 @@ namespace scrimp.Controllers
                 var transactionAccountTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(transactionAccountTransactions);
                 return Ok(transactionAccountTransactionDtos);
             }
-            return BadRequest(_errorService.BadRequest("transaction account", id));
+            return BadRequest(_errorService.BadRequest("transaction account", id, HttpContext.Request));
         }
 
         // GET api/accounts/:id/transactions
@@ -65,7 +65,7 @@ namespace scrimp.Controllers
 
             if (account == null)
             {
-                return NotFound(_errorService.NotFound("account", id));
+                return NotFound(_errorService.NotFound("account", id, HttpContext.Request));
             }
 
             if (account is Account)
@@ -74,7 +74,7 @@ namespace scrimp.Controllers
                 var accountTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(accountTransactions);
                 return Ok(accountTransactionDtos);
             }
-            return BadRequest(_errorService.BadRequest("account", id));
+            return BadRequest(_errorService.BadRequest("account", id, HttpContext.Request));
         }
 
         // GET api/users/:id/transactions
@@ -86,7 +86,7 @@ namespace scrimp.Controllers
 
             if (user == null)
             {
-                return NotFound(_errorService.NotFound("user", id));
+                return NotFound(_errorService.NotFound("user", id, HttpContext.Request));
             }
 
             if (user is User)
@@ -95,7 +95,7 @@ namespace scrimp.Controllers
                 var userTransactionDtos = _mapper.Map<IEnumerable<TransactionDto>>(userTransactions);
                 return Ok(userTransactionDtos);
             }
-            return BadRequest(_errorService.BadRequest("user", id));
+            return BadRequest(_errorService.BadRequest("user", id, HttpContext.Request));
         }
 
         // POST api/transaction_accounts/:id/transactions
@@ -107,7 +107,7 @@ namespace scrimp.Controllers
 
             if (transactionAccount == null)
             {
-                return NotFound(_errorService.NotFound("transaction account", id));
+                return NotFound(_errorService.NotFound("transaction account", id, HttpContext.Request));
             }
 
             if (transactionAccount is TransactionAccount)
@@ -121,10 +121,10 @@ namespace scrimp.Controllers
                 }
                 catch (AppException ex)
                 {
-                    return BadRequest(_errorService.BadRequest(ex));
+                    return BadRequest(_errorService.BadRequest(ex, HttpContext.Request));
                 }
             }
-            return BadRequest(_errorService.BadRequest("transaction account", id));
+            return BadRequest(_errorService.BadRequest("transaction account", id, HttpContext.Request));
         }
 
         // GET api/transactions/:id
@@ -150,7 +150,7 @@ namespace scrimp.Controllers
             }
             catch (AppException ex)
             {
-                return BadRequest(_errorService.BadRequest(ex));
+                return BadRequest(_errorService.BadRequest(ex, HttpContext.Request));
             }
         }
     }
