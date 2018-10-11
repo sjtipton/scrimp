@@ -13,12 +13,14 @@ namespace scrimp.Controllers
     {
         private IUserService _userService;
         private ITransactionAccountService _transactionAccountService;
+        private IErrorService _errorService;
         private IMapper _mapper;
 
-        public TransactionAccountsController(IUserService userService, ITransactionAccountService transactionAccountService, IMapper mapper)
+        public TransactionAccountsController(IUserService userService, ITransactionAccountService transactionAccountService, IErrorService errorService, IMapper mapper)
         {
             _userService = userService;
             _transactionAccountService = transactionAccountService;
+            _errorService = errorService;
             _mapper = mapper;
         }
 
@@ -31,7 +33,7 @@ namespace scrimp.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound(_errorService.NotFound("user", id, HttpContext.Request));
             }
 
             if (user is User)
@@ -40,7 +42,7 @@ namespace scrimp.Controllers
                 var userTransactionAccountDtos = _mapper.Map<IEnumerable<TransactionAccountDto>>(userTransactionAccounts);
                 return Ok(userTransactionAccountDtos);
             }
-            return BadRequest("The user is not valid.");
+            return BadRequest(_errorService.BadRequest("user", id, HttpContext.Request));
         }
 
         // GET api/transaction_accounts/:id

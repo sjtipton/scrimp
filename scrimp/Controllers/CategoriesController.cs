@@ -14,12 +14,14 @@ namespace scrimp.Controllers
     {
         private IUserService _userService;
         private ICategoryService _categoryService;
+        private IErrorService _errorService;
         private IMapper _mapper;
 
-        public CategoriesController(IUserService userService, ICategoryService categoryService, IMapper mapper)
+        public CategoriesController(IUserService userService, ICategoryService categoryService, IErrorService errorService, IMapper mapper)
         {
             _userService = userService;
             _categoryService = categoryService;
+            _errorService = errorService;
             _mapper = mapper;
         }
 
@@ -32,7 +34,7 @@ namespace scrimp.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound(_errorService.NotFound("user", id, HttpContext.Request));
             }
 
             if (user is User)
@@ -41,7 +43,7 @@ namespace scrimp.Controllers
                 var userCategoryDtos = _mapper.Map<IEnumerable<CategoryDto>>(userCategories);
                 return Ok(userCategoryDtos);
             }
-            return BadRequest("The user is not valid.");
+            return BadRequest(_errorService.BadRequest("user", id, HttpContext.Request));
         }
 
         // POST api/users/:id/categories
@@ -53,7 +55,7 @@ namespace scrimp.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound(_errorService.NotFound("user", id, HttpContext.Request));
             }
 
             if (user is User)
@@ -67,10 +69,10 @@ namespace scrimp.Controllers
                 }
                 catch (AppException ex)
                 {
-                    return BadRequest(new { message = ex.Message });
+                    return BadRequest(_errorService.BadRequest(ex, HttpContext.Request));
                 }
             }
-            return BadRequest("The user is not valid.");
+            return BadRequest(_errorService.BadRequest("user", id, HttpContext.Request));
         }
 
         // GET api/categories/:id
@@ -96,7 +98,7 @@ namespace scrimp.Controllers
             }
             catch (AppException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(_errorService.BadRequest(ex, HttpContext.Request));
             }
         }
 

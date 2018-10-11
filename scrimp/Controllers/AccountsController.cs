@@ -14,12 +14,14 @@ namespace scrimp.Controllers
     {
         private IUserService _userService;
         private IAccountService _accountService;
+        private IErrorService _errorService;
         private IMapper _mapper;
 
-        public AccountsController(IUserService userService, IAccountService accountService, IMapper mapper)
+        public AccountsController(IUserService userService, IAccountService accountService, IErrorService errorService, IMapper mapper)
         {
             _userService = userService;
             _accountService = accountService;
+            _errorService = errorService;
             _mapper = mapper;
         }
 
@@ -31,7 +33,7 @@ namespace scrimp.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound(_errorService.NotFound("user", id, HttpContext.Request));
             }
 
             if (user is User)
@@ -40,7 +42,7 @@ namespace scrimp.Controllers
                 var userAccountDtos = _mapper.Map<IEnumerable<AccountDto>>(userAccounts);
                 return Ok(userAccountDtos);
             }
-            return BadRequest("The user is not valid.");
+            return BadRequest(_errorService.BadRequest("user", id, HttpContext.Request));
         }
 
         // POST api/users/:id/accounts
@@ -51,7 +53,7 @@ namespace scrimp.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound(_errorService.NotFound("user", id, HttpContext.Request));
             }
 
             if (user is User)
@@ -65,10 +67,10 @@ namespace scrimp.Controllers
                 }
                 catch (AppException ex)
                 {
-                    return BadRequest(new { message = ex.Message });
+                    return BadRequest(_errorService.BadRequest(ex, HttpContext.Request));
                 }
             }
-            return BadRequest("The user is not valid.");
+            return BadRequest(_errorService.BadRequest("user", id, HttpContext.Request));
         }
 
         // GET api/accounts/:id
@@ -94,7 +96,7 @@ namespace scrimp.Controllers
             }
             catch(AppException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(_errorService.BadRequest(ex, HttpContext.Request));
             }
         }
 
