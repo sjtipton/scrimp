@@ -11,6 +11,7 @@ namespace scrimp.Entities
         public string Code { get; set; }
         public string Title { get; set; }
         public string Detail { get; set; }
+        public HttpRequestMeta HttpRequest { get; set; }
         public AppException InnerException { get; set; }
     }
 }
