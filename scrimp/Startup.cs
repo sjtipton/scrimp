@@ -74,6 +74,7 @@ namespace scrimp
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ITransactionAccountService, TransactionAccountService>();
             services.AddScoped<ITransactionService, TransactionService>();
+            services.AddScoped<IErrorService, ApiErrorService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
