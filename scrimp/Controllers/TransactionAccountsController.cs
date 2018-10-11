@@ -50,8 +50,18 @@ namespace scrimp.Controllers
         public IActionResult GetById(int id)
         {
             var transactionAccount = _transactionAccountService.GetById(id);
-            var transactionAccountDto = _mapper.Map<TransactionAccountDto>(transactionAccount);
-            return Ok(transactionAccountDto);
+
+            if (transactionAccount == null)
+            {
+                return NotFound(_errorService.NotFound("transaction account", id, HttpContext.Request));
+            }
+
+            if (transactionAccount is TransactionAccount)
+            {
+                var transactionAccountDto = _mapper.Map<TransactionAccountDto>(transactionAccount);
+                return Ok(transactionAccountDto);
+            }
+            return BadRequest(_errorService.BadRequest("transaction account", id, HttpContext.Request));
         }
     }
 }

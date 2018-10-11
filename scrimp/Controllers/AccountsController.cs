@@ -78,8 +78,18 @@ namespace scrimp.Controllers
         public IActionResult GetById(int id)
         {
             var account = _accountService.GetById(id);
-            var accountDto = _mapper.Map<AccountDto>(account);
-            return Ok(accountDto);
+
+            if (account == null)
+            {
+                return NotFound(_errorService.NotFound("account", id, HttpContext.Request));
+            }
+
+            if (account is Account)
+            {
+                var accountDto = _mapper.Map<AccountDto>(account);
+                return Ok(accountDto);
+            }
+            return BadRequest(_errorService.BadRequest("account", id, HttpContext.Request));
         }
 
         // PUT api/accounts/:id

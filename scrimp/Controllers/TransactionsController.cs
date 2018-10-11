@@ -132,8 +132,18 @@ namespace scrimp.Controllers
         public IActionResult GetById(int id)
         {
             var transaction = _transactionService.GetById(id);
-            var transactionDto = _mapper.Map<TransactionDto>(transaction);
-            return Ok(transactionDto);
+
+            if (transaction == null)
+            {
+                return NotFound(_errorService.NotFound("transaction", id, HttpContext.Request));
+            }
+
+            if (transaction is Transaction)
+            {
+                var transactionDto = _mapper.Map<TransactionDto>(transaction);
+                return Ok(transactionDto);
+            }
+            return BadRequest(_errorService.BadRequest("transaction", id, HttpContext.Request));
         }
 
         // PUT api/transactions/:id

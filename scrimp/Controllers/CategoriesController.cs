@@ -80,8 +80,18 @@ namespace scrimp.Controllers
         public IActionResult GetById(int id)
         {
             var category = _categoryService.GetById(id);
-            var categoryDto = _mapper.Map<CategoryDto>(category);
-            return Ok(categoryDto);
+
+            if (category == null)
+            {
+                return NotFound(_errorService.NotFound("category", id, HttpContext.Request));
+            }
+
+            if (category is Category)
+            {
+                var categoryDto = _mapper.Map<CategoryDto>(category);
+                return Ok(categoryDto);
+            }
+            return BadRequest(_errorService.BadRequest("category", id, HttpContext.Request));
         }
 
         // PUT api/categories/:id
