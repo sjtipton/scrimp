@@ -5,6 +5,8 @@ namespace scrimp.Dtos
 {
     public class TransactionAccountDto
     {
+        public int Id { get; set; }
+        public int UserId { get; set; }
         public string Name { get; set; }
         public string Number { get; set; }
         public decimal CurrentBalance { get; set; }
@@ -13,6 +15,7 @@ namespace scrimp.Dtos
         public DateTime StartingBalanceDate { get; set; }
         public string CurrencyCode { get; set; }
         public TransactionStatus Status { get; set; }
-        public int UserId { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }
