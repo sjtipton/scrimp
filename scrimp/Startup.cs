@@ -39,7 +39,7 @@ namespace scrimp
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1); // TODO is compatibility version necessary?
             services.AddAutoMapper();
 
-            services.AddHttpClient<GreenlitRestApiClient>();
+            services.AddHttpClient<IRestApiClient<GreenlitUser>, GreenlitRestApiClient>();
 
             // JWT Authentication
             // Following https://fullstackmark.com/post/13/jwt-authentication-with-aspnet-core-2-web-api-angular-5-net-core-identity-and-facebook-login
