@@ -2,13 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using scrimp.Dtos;
 using scrimp.Entities;
 using scrimp.Helpers;
 using scrimp.Helpers.Jwt;
 using scrimp.Services;
-using System;
 using System.Threading.Tasks;
 
 namespace scrimp.Controllers
@@ -19,14 +17,14 @@ namespace scrimp.Controllers
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
-        private GreenlitRestApiClient _greenlitApiClient;
+        private IRestApiClient<GreenlitUser> _greenlitApiClient;
         private IJwtService _jwtService;
         private JwtIssuerOptions _jwtOptions;
         private IErrorService _errorService;
         private IMapper _mapper;
 
         public UsersController(IUserService userService,
-                               GreenlitRestApiClient greenlitApiClient,
+                               IRestApiClient<GreenlitUser> greenlitApiClient,
                                IJwtService jwtService,
                                IOptions<JwtIssuerOptions> jwtOptions,
                                IErrorService errorService,
@@ -45,43 +43,12 @@ namespace scrimp.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody]GreenlitAuthDto authDto)
         {
-            // we will already have a valid access token from Greenlit, as far as JWT is concerned
-            // we just need to find out if we have a corresponding User in Scrimp to map to --
-            // if not, we create that Scrimp User, and set the Greenlit API ID to the User
-            // to persist the mapping (i.e. so the other User details are de-coupled)
             try
             {
-                var user = _userService.GetByApiId(authDto.ApiId);
-
-                if (user == null)
-                {
-                    var greenlitUser = await _greenlitApiClient.GetGreenlitRestApiUser(authDto.ApiId);
-
-                    var appUser = new User
-                    {
-                        FirstName = greenlitUser.FirstName,
-                        LastName = greenlitUser.LastName,
-                        EmailAddress = greenlitUser.EmailAddress,
-                        GreenlitApiId = greenlitUser.Id
-                    };
-
-                    var result = _userService.Create(appUser);
-                }
-
-                var localUser = _userService.GetByApiId(authDto.ApiId);
-
-                if (localUser == null)
-                {
-                    return BadRequest(_errorService.BadRequest(new AppException("Failed to create local user account"), HttpContext.Request));
-                }
-
-                var jwt = await Tokens.GenerateJwt(_jwtService.GenerateClaimsIdentity(localUser.EmailAddress, localUser.Id),
-                    _jwtService, localUser.EmailAddress, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
-
-                return new OkObjectResult(jwt);
+                JwtResponse jwt = await _userService.AuthenticateApiUser(authDto.ApiId, authDto.AuthToken);
+                return Ok(jwt);
             }
-            catch (AppException ex)
-            {
+            catch (AppException ex) {
                 return BadRequest(_errorService.BadRequest(ex, HttpContext.Request));
             }
         }
