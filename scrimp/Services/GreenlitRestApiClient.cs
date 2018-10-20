@@ -1,11 +1,12 @@
 ﻿using scrimp.Helpers;
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace scrimp.Services
 {
-    public class GreenlitRestApiClient
+    public class GreenlitRestApiClient : IRestApiClient<GreenlitUser>
     {
         public HttpClient Client { get; }
 
@@ -17,11 +18,21 @@ namespace scrimp.Services
             Client = client;
         }
 
-        public async Task<GreenlitUser> GetGreenlitRestApiUser(Guid id)
+        public async Task<GreenlitUser> GetRestApiEntity(Guid id, string authToken)
         {
-            var response = await Client.GetAsync($"users/{id}");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsAsync<GreenlitUser>();
+            // Update the client headers to send the authToken
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+
+            try
+            {
+                var response = await Client.GetAsync($"users/{id}");
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsAsync<GreenlitUser>();
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new AppException(ex.Message);
+            }
         }
     }
 
