@@ -12,6 +12,7 @@ namespace scrimp
             BuildWebHost(args).Run();
         }
 
+        // TODO enhance if necessary
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((WebHostBuilderContext context, IConfigurationBuilder builder) =>
@@ -24,10 +25,13 @@ namespace scrimp
                         .AddCommandLine(args)
                         .AddEnvironmentVariables();
                 })
-                .UseKestrel(o => {
-                    o.ListenLocalhost(int.Parse("4000"), lo => {
-                        lo.UseHttps();
-                    });
+                .UseKestrel((context, options) => {
+                    if (context.HostingEnvironment.IsDevelopment())
+                    {
+                        options.ListenLocalhost(int.Parse(context.Configuration["Port"]), listenOptions => {
+                            listenOptions.UseHttps();
+                        });
+                    }
                 })
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
