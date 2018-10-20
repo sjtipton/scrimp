@@ -1,10 +1,11 @@
 ﻿using scrimp.Domain;
+using scrimp.Helpers.Timestamps;
 using System;
 using System.Collections.Generic;
 
 namespace scrimp.Entities
 {
-    public class Transaction
+    public class Transaction : IAuditableModel
     {
         public int Id { get; set; }
         public int UserId { get; set; }
@@ -23,5 +24,7 @@ namespace scrimp.Entities
         public TransactionAccount TransactionAccount { get; set; }
         public TransactionStatus Status { get; set; }
         public decimal ClosingBalance { get; set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }
