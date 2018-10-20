@@ -1,5 +1,4 @@
-﻿using scrimp.Dtos;
-using scrimp.Entities;
+﻿using scrimp.Entities;
 using scrimp.Helpers;
 using System;
 using System.Linq;
@@ -15,14 +14,25 @@ namespace scrimp.Services
             _context = context;
         }
 
-        public AuthenticatedUser GetAuthenticatedUser()
-        {
-            throw new NotImplementedException();
-        }
-
         public User GetById(int id)
         {
             return _context.Users.Find(id);
+        }
+
+        public User GetByApiId(Guid apiId)
+        {
+            return _context.Users.Find(apiId);
+        }
+
+        public User Create(User user)
+        {
+            if (_context.Users.Any(x => x.EmailAddress == user.EmailAddress))
+                throw new AppException($"Email address {user.EmailAddress} is already taken");
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
+            return user;
         }
 
         public void Update(User userParam)
