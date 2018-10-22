@@ -1,0 +1,18 @@
+﻿version: "3"
+services:
+  scrimpweb:
+    build: .
+    ports:
+      - "4000:80"
+    depends_on:
+      - scrimpsql
+  scrimpsql:
+    image: "microsoft/mssql-server-linux"
+    volumes:
+      - scrimpdata:/var/opt/mssql
+    environment:
+      SA_PASSWORD: "3sU12BE1"
+      ACCEPT_EULA: "Y"
+
+volumes:
+  scrimpdata:
