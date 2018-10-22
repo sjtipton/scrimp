@@ -9,7 +9,7 @@ namespace scrimp.Controllers
 {
     [ApiController]
     [Route("api")]
-    public class TransactionAccountsController : ControllerBase
+    public class TransactionAccountsController : AuthorizeController
     {
         private IUserService _userService;
         private ITransactionAccountService _transactionAccountService;

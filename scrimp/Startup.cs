@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -6,8 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using scrimp.Entities;
+using scrimp.Helpers;
+using scrimp.Helpers.Jwt;
 using scrimp.Services;
+using System;
+using System.Text;
 
 namespace scrimp
 {
@@ -19,6 +25,8 @@ namespace scrimp
         {
             Configuration = configuration;
             _logger = logger;
+
+            BuildAppSettingsProvider();
         }
 
         public IConfiguration Configuration { get; }
@@ -31,43 +39,56 @@ namespace scrimp
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1); // TODO is compatibility version necessary?
             services.AddAutoMapper();
 
-            // TODO Authentication ... consume JWT token with incoming principle and attach to scrimp.Entities.User
-            // TODO Authorize and set up API Key ... need to data model this
-            // TODO This is an example from Greenlit; replace this with the Scrimp implementation
-            //var appSettings = appSettingsSection.Get<AppSettings>();
-            //var key = Encoding.UTF8.GetBytes(appSettings.Secret);
-            //services.AddAuthentication(x =>
-            //{
-            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //})
-            //.AddJwtBearer(x =>
-            //{
-            //    x.Events = new JwtBearerEvents
-            //    {
-            //        OnTokenValidated = context =>
-            //        {
-            //            var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-            //            var userId = int.Parse(context.Principal.Identity.Name);
-            //            var user = userService.GetById(userId);
-            //            if (user == null)
-            //            {
-            //                // return unauthorized if user no longer exists
-            //                context.Fail("Unauthorized");
-            //            }
-            //            return Task.CompletedTask;
-            //        }
-            //    };
-            //    x.RequireHttpsMetadata = false;
-            //    x.SaveToken = true;
-            //    x.TokenValidationParameters = new TokenValidationParameters
-            //    {
-            //        ValidateIssuerSigningKey = true,
-            //        IssuerSigningKey = new SymmetricSecurityKey(key),
-            //        ValidateIssuer = false,
-            //        ValidateAudience = false
-            //    };
-            //});
+            services.AddHttpClient<IRestApiClient<GreenlitUser>, GreenlitRestApiClient>();
+
+            // JWT Authentication
+            // Following https://fullstackmark.com/post/13/jwt-authentication-with-aspnet-core-2-web-api-angular-5-net-core-identity-and-facebook-login
+            // as a general guideline for wiring up JWT
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["AppSettings:Secret"]));
+
+            services.Configure<JwtIssuerOptions>(options =>
+            {
+                options.Issuer = Configuration["JwtIssuerOptions:Issuer"];
+                options.Audience = Configuration["JwtIssuerOptions:Audience"];
+                options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+            });
+
+            // Token validation
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = Configuration["JwtIssuerOptions:Issuer"],
+
+                ValidateAudience = true,
+                ValidAudience = Configuration["JwtIssuerOptions:Audience"],
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(configureOptions =>
+            {
+                configureOptions.ClaimsIssuer = Configuration["JwtIssuerOptions:Issuer"];
+                configureOptions.TokenValidationParameters = tokenValidationParameters;
+                configureOptions.SaveToken = true;
+            });
+
+            // api user claim policy
+            services.AddAuthorization(options => {
+                options.AddPolicy("ApiUser", policy => policy.RequireClaim(JwtClaimIdentifiers.Rol, JwtClaims.ApiAccess));
+            });
+
+            // configure DI for application services
+            services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IJwtService, JwtService>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAccountService, AccountService>();
@@ -91,9 +112,19 @@ namespace scrimp
                 .AllowCredentials());
 
             // TODO Use authentication when ready
-            // app.UseAuthentication();
+            app.UseAuthentication();
 
             app.UseMvc();
+        }
+
+        private void BuildAppSettingsProvider()
+        {
+            var configuration = new AppSettingsConfiguration
+            {
+                GreenlitApiUrl = Configuration["Greenlit:ServicePath"]
+            };
+
+            AppSettingsProvider.SetGreenlitApiUrl(configuration);
         }
     }
 }

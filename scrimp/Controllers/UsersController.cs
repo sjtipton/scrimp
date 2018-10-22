@@ -1,37 +1,55 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using scrimp.Dtos;
 using scrimp.Entities;
 using scrimp.Helpers;
+using scrimp.Helpers.Jwt;
 using scrimp.Services;
-using System;
+using System.Threading.Tasks;
 
 namespace scrimp.Controllers
 {
-    // TODO add Authorization
     [ApiController]
     [Route("api/users")]
-    public class UsersController : ControllerBase
+    public class UsersController : AuthorizeController
     {
         private IUserService _userService;
+        private IRestApiClient<GreenlitUser> _greenlitApiClient;
+        private IJwtService _jwtService;
+        private JwtIssuerOptions _jwtOptions;
         private IErrorService _errorService;
         private IMapper _mapper;
 
-        public UsersController(IUserService userService, IErrorService errorService, IMapper mapper)
+        public UsersController(IUserService userService,
+                               IRestApiClient<GreenlitUser> greenlitApiClient,
+                               IJwtService jwtService,
+                               IOptions<JwtIssuerOptions> jwtOptions,
+                               IErrorService errorService,
+                               IMapper mapper)
         {
             _userService = userService;
+            _greenlitApiClient = greenlitApiClient;
+            _jwtService = jwtService;
+            _jwtOptions = jwtOptions.Value;
             _errorService = errorService;
             _mapper = mapper;
         }
 
-        // TODO consider authenticate/authorize/register endpoints
-
-        // GET api/me
-        [HttpGet]
-        [Route("~/api/me")]
-        public IActionResult GetAuthenticatedUser()
+        // POST api/users/authenticate
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public async Task<IActionResult> Authenticate([FromBody]GreenlitAuthDto authDto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                JwtResponse jwt = await _userService.AuthenticateApiUser(authDto.ApiId, authDto.AuthToken);
+                return Ok(jwt);
+            }
+            catch (AppException ex) {
+                return BadRequest(_errorService.BadRequest(ex, HttpContext.Request));
+            }
         }
 
         // GET api/users/:id

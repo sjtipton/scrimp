@@ -10,7 +10,7 @@ namespace scrimp.Controllers
 {
     [ApiController]
     [Route("api/users/{id}/accounts")]
-    public class AccountsController : ControllerBase
+    public class AccountsController : AuthorizeController
     {
         private IUserService _userService;
         private IAccountService _accountService;

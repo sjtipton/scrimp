@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using scrimp.Entities;
 
 namespace scrimp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20181020123319_AddGreenlitApiIdToUsers")]
+    partial class AddGreenlitApiIdToUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +27,7 @@ namespace scrimp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime?>("CreatedAt");
 
                     b.Property<string>("CurrencyCode");
 
@@ -59,7 +61,7 @@ namespace scrimp.Migrations
 
                     b.Property<string>("Color");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime?>("CreatedAt");
 
                     b.Property<bool>("IsTransfer");
 
@@ -141,8 +143,6 @@ namespace scrimp.Migrations
                     b.Property<decimal>("ClosingBalance")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("CreatedAt");
-
                     b.Property<bool>("IsTransfer");
 
                     b.Property<string>("Memo");
@@ -156,8 +156,6 @@ namespace scrimp.Migrations
                     b.Property<int>("TransactionAccountId");
 
                     b.Property<int>("Type");
-
-                    b.Property<DateTime?>("UpdatedAt");
 
                     b.Property<int>("UserId");
 
@@ -178,7 +176,7 @@ namespace scrimp.Migrations
 
                     b.Property<int?>("AccountId");
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime?>("CreatedAt");
 
                     b.Property<string>("CurrencyCode");
 
@@ -232,7 +230,7 @@ namespace scrimp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime?>("CreatedAt");
 
                     b.Property<string>("CurrencyCode");
 

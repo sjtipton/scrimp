@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using scrimp.Helpers.Timestamps;
+using System;
+using System.Linq;
 
 namespace scrimp.Entities
 {
@@ -36,6 +39,30 @@ namespace scrimp.Entities
             modelBuilder.Entity<TransactionAccount>()
                 .Property(p => p.StartingBalance)
                 .HasColumnType("decimal(18,2)");
+        }
+
+        public override int SaveChanges()
+        {
+            var added = ChangeTracker.Entries<IAuditableModel>().Where(e => e.State == EntityState.Added).ToList();
+
+            added.ForEach(e =>
+            {
+                e.Property(x => x.CreatedAt).CurrentValue = DateTime.UtcNow;
+                e.Property(x => x.CreatedAt).IsModified = true;
+            });
+
+            var modified = ChangeTracker.Entries<IAuditableModel>().Where(e => e.State == EntityState.Modified).ToList();
+
+            modified.ForEach(e =>
+            {
+                e.Property(x => x.UpdatedAt).CurrentValue = DateTime.UtcNow;
+                e.Property(x => x.UpdatedAt).IsModified = true;
+
+                e.Property(x => x.CreatedAt).CurrentValue = e.Property(x => x.CreatedAt).OriginalValue;
+                e.Property(x => x.CreatedAt).IsModified = false;
+            });
+
+            return base.SaveChanges();
         }
     }
 }

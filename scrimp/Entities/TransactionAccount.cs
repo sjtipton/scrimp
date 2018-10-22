@@ -1,9 +1,10 @@
 ﻿using scrimp.Domain;
+using scrimp.Helpers.Timestamps;
 using System;
 
 namespace scrimp.Entities
 {
-    public class TransactionAccount
+    public class TransactionAccount : IAuditableModel
     {
         public int Id { get; set; }
         public int UserId { get; set; }
@@ -15,7 +16,7 @@ namespace scrimp.Entities
         public DateTime StartingBalanceDate { get; set; }
         public string CurrencyCode { get; set; }
         public TransactionStatus Status { get; set; }
-        public DateTime? CreatedAt { get; set; }
+        public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; set; }
     }
 }
