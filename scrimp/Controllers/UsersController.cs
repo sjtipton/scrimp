@@ -11,10 +11,9 @@ using System.Threading.Tasks;
 
 namespace scrimp.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/users")]
-    public class UsersController : ControllerBase
+    public class UsersController : AuthorizeController
     {
         private IUserService _userService;
         private IRestApiClient<GreenlitUser> _greenlitApiClient;

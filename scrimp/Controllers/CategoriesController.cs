@@ -10,7 +10,7 @@ namespace scrimp.Controllers
 {
     [ApiController]
     [Route("api")]
-    public class CategoriesController : ControllerBase
+    public class CategoriesController : AuthorizeController
     {
         private IUserService _userService;
         private ICategoryService _categoryService;
