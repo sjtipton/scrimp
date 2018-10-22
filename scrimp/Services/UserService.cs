@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using scrimp.Entities;
 using scrimp.Helpers;
 using scrimp.Helpers.Jwt;
