@@ -1,13 +1,27 @@
 ﻿version: "3"
 services:
   scrimpweb:
-    build: .
+    image: "slaatipton/scrimp:rc-1"
+    deploy:
+      replicas: 5
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
     ports:
       - "4000:80"
+    networks:
+      - webnet
     depends_on:
       - scrimpsql
   scrimpsql:
     image: "microsoft/mssql-server-linux"
+    ports:
+      - "1438:1433"
+    networks:
+      - webnet
     volumes:
       - scrimpdata:/var/opt/mssql
     environment:
@@ -16,3 +30,8 @@ services:
 
 volumes:
   scrimpdata:
+
+networks:
+  webnet:
+    external:
+      name: webnet
