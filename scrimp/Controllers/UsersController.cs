@@ -52,6 +52,26 @@ namespace scrimp.Controllers
             }
         }
 
+        // POST api/users/setup
+        [AllowAnonymous]
+        [HttpPost("setup")]
+        public IActionResult Setup([FromBody]UserSetupDto userSetupDto)
+        {
+            var authToken = userSetupDto.AuthToken;
+            var user = _mapper.Map<User>(userSetupDto);
+
+            try
+            {
+                _userService.Create(user);
+                _userService.AuthenticateApiUser(user, authToken);
+                return Ok();
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(_errorService.BadRequest(ex, HttpContext.Request));
+            }
+        }
+
         // GET api/users/:id
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
