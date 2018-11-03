@@ -48,10 +48,10 @@ namespace scrimp.Services
             if (localUser == null)
                 throw new AppException("Failed to create local user account");
 
-            return await AuthenticateApiUser(localUser, AuthToken);
+            return await AuthenticateApiUser(localUser);
         }
 
-        public async Task<JwtResponse> AuthenticateApiUser(User user, string AuthToken)
+        public async Task<JwtResponse> AuthenticateApiUser(User user)
         {
             var jwt = await Tokens.GenerateJwt(_jwtService.GenerateClaimsIdentity(user.EmailAddress, user.Id),
                 _jwtService, user.EmailAddress, _jwtOptions);

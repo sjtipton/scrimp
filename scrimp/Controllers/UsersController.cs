@@ -55,16 +55,17 @@ namespace scrimp.Controllers
         // POST api/users/setup
         [AllowAnonymous]
         [HttpPost("setup")]
-        public IActionResult Setup([FromBody]UserSetupDto userSetupDto)
+        public async Task<IActionResult> Setup([FromBody]UserSetupDto userSetupDto)
         {
             var authToken = userSetupDto.AuthToken;
             var user = _mapper.Map<User>(userSetupDto);
 
             try
             {
-                _userService.Create(user);
-                _userService.AuthenticateApiUser(user, authToken);
-                return Ok();
+                var userResponse = _userService.Create(user);
+                JwtResponse jwt = await _userService.AuthenticateApiUser(userResponse);
+
+                return Ok(new UserSetupResponse { User = userResponse, Jwt = jwt });
             }
             catch (AppException ex)
             {

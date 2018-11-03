@@ -1,18 +1,16 @@
-﻿using scrimp.Domain;
-using System;
+﻿using scrimp.Entities;
+using scrimp.Helpers.Jwt;
 
 namespace scrimp.Dtos
 {
-    public class UserSetupDto
+    public class UserSetupDto : UserDto
     {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string EmailAddress { get; set; }
-        public Guid GreenlitApiId { get; set; }
-        public string Timezone { get; set; }
-        public Weekday WeekStartDay { get; set; }
-        public string CurrencyCode { get; set; }
         public string AuthToken { get; set; }
+    }
+
+    public class UserSetupResponse
+    {
+        public User User { get; set; }
+        public JwtResponse Jwt { get; set; }
     }
 }
