@@ -8,6 +8,7 @@ namespace scrimp.Services
     public interface IUserService
     {
         Task<JwtResponse> AuthenticateApiUser(Guid ApiId, string AuthToken);
+        Task<JwtResponse> AuthenticateApiUser(User user);
         User GetById(int id);
         User GetByApiId(Guid apiId);
         User Create(User user);

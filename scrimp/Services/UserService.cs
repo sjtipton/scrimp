@@ -28,13 +28,7 @@ namespace scrimp.Services
 
         public async Task<JwtResponse> AuthenticateApiUser(Guid ApiId, string AuthToken)
         {
-            // we will already have a valid access token from Greenlit, as far as JWT is concerned
-            // we just need to find out if we have a corresponding User in Scrimp to map to --
-            // if not, we create that Scrimp User, and set the Greenlit API ID to the User
-            // to persist the mapping (i.e. so the other User details are de-coupled)
-            var user = GetByApiId(ApiId);
-
-            if (user == null)
+            if (GetByApiId(ApiId) == null)
             {
                 var greenlitUser = await _greenlitApiClient.GetRestApiEntity(ApiId, AuthToken);
 
@@ -54,8 +48,13 @@ namespace scrimp.Services
             if (localUser == null)
                 throw new AppException("Failed to create local user account");
 
-            var jwt = await Tokens.GenerateJwt(_jwtService.GenerateClaimsIdentity(localUser.EmailAddress, localUser.Id),
-                _jwtService, localUser.EmailAddress, _jwtOptions);
+            return await AuthenticateApiUser(localUser);
+        }
+
+        public async Task<JwtResponse> AuthenticateApiUser(User user)
+        {
+            var jwt = await Tokens.GenerateJwt(_jwtService.GenerateClaimsIdentity(user.EmailAddress, user.Id),
+                _jwtService, user.EmailAddress, _jwtOptions);
 
             return jwt;
         }

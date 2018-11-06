@@ -52,6 +52,27 @@ namespace scrimp.Controllers
             }
         }
 
+        // POST api/users/setup
+        [AllowAnonymous]
+        [HttpPost("setup")]
+        public async Task<IActionResult> Setup([FromBody]UserSetupDto userSetupDto)
+        {
+            var authToken = userSetupDto.AuthToken;
+            var user = _mapper.Map<User>(userSetupDto);
+
+            try
+            {
+                var userResponse = _userService.Create(user);
+                JwtResponse jwt = await _userService.AuthenticateApiUser(userResponse);
+
+                return Ok(new UserSetupResponse { User = userResponse, Jwt = jwt });
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(_errorService.BadRequest(ex, HttpContext.Request));
+            }
+        }
+
         // GET api/users/:id
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
