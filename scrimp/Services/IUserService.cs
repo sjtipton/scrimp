@@ -1,4 +1,5 @@
-﻿using scrimp.Entities;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using scrimp.Entities;
 using scrimp.Helpers.Jwt;
 using System;
 using System.Threading.Tasks;
@@ -13,5 +14,6 @@ namespace scrimp.Services
         User GetByApiId(Guid apiId);
         User Create(User user);
         void Update(User user);
+        User PatchUser(int id, JsonPatchDocument<User> patchDocument);
     }
 }

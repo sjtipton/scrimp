@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using scrimp.Dtos;
@@ -103,6 +104,26 @@ namespace scrimp.Controllers
             {
                 _userService.Update(user);
                 return Ok();
+            }
+            catch(AppException ex)
+            {
+                return BadRequest(_errorService.BadRequest(ex, HttpContext.Request));
+            }
+        }
+
+        // PATCH api/users/:id
+        [HttpPatch("{id}")]
+        public IActionResult PatchUser(int id, [FromBody]JsonPatchDocument<User> patchDocument)
+        {
+            if (patchDocument == null)
+            {
+                return BadRequest(_errorService.BadRequest("user", id, HttpContext.Request));
+            }
+
+            try
+            {
+                var patchedUser = _userService.PatchUser(id, patchDocument);
+                return Ok(patchedUser);
             }
             catch(AppException ex)
             {

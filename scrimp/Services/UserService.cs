@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Options;
 using scrimp.Entities;
 using scrimp.Helpers;
 using scrimp.Helpers.Jwt;
@@ -102,6 +103,19 @@ namespace scrimp.Services
 
             _context.Users.Update(user);
             _context.SaveChanges();
+        }
+
+        public User PatchUser(int id, JsonPatchDocument<User> patchDocument)
+        {
+            var user = GetById(id);
+
+            if (user == null)
+                throw new AppException("User not found");
+
+            patchDocument.ApplyTo(user);
+            _context.SaveChanges();
+
+            return user;
         }
     }
 }
